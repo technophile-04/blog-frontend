@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Register from './components/Register';
+import Register from './pages/Register';
 import Home from './pages/Home';
 
 function App() {
