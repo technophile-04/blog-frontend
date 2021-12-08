@@ -1,6 +1,9 @@
 import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { registerUserAction } from '../redux/slices/user/userSlice';
 
 // Form Schema
 
@@ -15,6 +18,11 @@ const formSchema = Yup.object({
 //Register
 //-------------------------------
 const Register = () => {
+	const dispatch = useDispatch();
+	const { loading, registerd, appErr, serverErr } = useSelector(
+		(store) => store.user
+	);
+
 	const formik = useFormik({
 		initialValues: {
 			firstName: '',
@@ -23,6 +31,7 @@ const Register = () => {
 			password: '',
 		},
 		onSubmit: (values) => {
+			dispatch(registerUserAction(values));
 			console.log(values);
 		},
 		validationSchema: formSchema,
@@ -48,6 +57,11 @@ const Register = () => {
 								<form onSubmit={formik.handleSubmit}>
 									<h3 className="mb-10 text-2xl text-white font-bold font-heading">
 										Register Account–
+										{serverErr || appErr ? (
+											<div className="text-red-500">
+												{serverErr} {appErr}
+											</div>
+										) : null}
 									</h3>
 									{/* First name */}
 									<div className="flex items-center pl-6 mb-3 bg-white rounded-full">
@@ -246,9 +260,10 @@ const Register = () => {
 
 									<button
 										type="submit"
-										className="py-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-full transition duration-200"
+										disabled={loading}
+										className="py-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-full transition duration-200 disabled:opacity-50"
 									>
-										Register
+										{loading ? 'Loading please wait...' : 'Register'}
 									</button>
 								</form>
 							</div>
