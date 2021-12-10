@@ -7,6 +7,7 @@ import {
 	removeItemFromLocalStorage,
 	setItemInLocalStorage,
 } from '../../../utils';
+import toast from 'react-hot-toast';
 
 //Register
 export const registerUserAction = createAsyncThunk(
@@ -47,12 +48,14 @@ export const loginUserAction = createAsyncThunk(
 			const { data } = await axios.post(API_URLS.login(), userData, config);
 
 			setItemInLocalStorage(LOCALSTORAGE_TOKEN_KEY, data);
+			toast.success('Successfully Logged in!');
 
 			return data;
 		} catch (error) {
 			if (!error.response) {
 				throw error;
 			}
+			toast.error('Error logging in');
 			return rejectWithValue(error?.response?.data);
 		}
 	}
@@ -64,11 +67,13 @@ export const logoutUserAction = createAsyncThunk(
 	async (data, { rejectWithValue, getState, dispatch }) => {
 		try {
 			removeItemFromLocalStorage(LOCALSTORAGE_TOKEN_KEY);
+			toast.success('Successfully Logged out!');
 			return null;
 		} catch (error) {
 			if (!error.response) {
 				throw error;
 			}
+			toast.error('Error Logging out!');
 			return rejectWithValue(error?.response?.data);
 		}
 	}
