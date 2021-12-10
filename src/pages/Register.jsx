@@ -1,9 +1,9 @@
 import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { registerUserAction } from '../redux/slices/user/userSlice';
+import { Navigate } from 'react-router-dom';
 
 // Form Schema
 
@@ -19,9 +19,11 @@ const formSchema = Yup.object({
 //-------------------------------
 const Register = () => {
 	const dispatch = useDispatch();
-	const { loading, registerd, appErr, serverErr } = useSelector(
+	const { loading, appErr, serverErr, registerdUser } = useSelector(
 		(store) => store.user
 	);
+
+	// console.log(registerdUser);
 
 	const formik = useFormik({
 		initialValues: {
@@ -32,10 +34,13 @@ const Register = () => {
 		},
 		onSubmit: (values) => {
 			dispatch(registerUserAction(values));
-			console.log(values);
 		},
 		validationSchema: formSchema,
 	});
+
+	if (registerdUser) {
+		return <Navigate to="/profile" />;
+	}
 
 	return (
 		<section className="relative py-20 2xl:py-40 bg-gray-800 overflow-hidden">
@@ -261,7 +266,9 @@ const Register = () => {
 									<button
 										type="submit"
 										disabled={loading}
-										className="py-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-full transition duration-200 disabled:opacity-50"
+										className={`py-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-full transition duration-200 disabled:opacity-50 ${
+											loading && 'cursor-wait'
+										}`}
 									>
 										{loading ? 'Loading please wait...' : 'Register'}
 									</button>
