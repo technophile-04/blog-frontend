@@ -4,6 +4,7 @@ import {
 	API_URLS,
 	getItemFromLocalStorage,
 	LOCALSTORAGE_TOKEN_KEY,
+	removeItemFromLocalStorage,
 	setItemInLocalStorage,
 } from '../../../utils';
 
@@ -48,6 +49,22 @@ export const loginUserAction = createAsyncThunk(
 			setItemInLocalStorage(LOCALSTORAGE_TOKEN_KEY, data);
 
 			return data;
+		} catch (error) {
+			if (!error.response) {
+				throw error;
+			}
+			return rejectWithValue(error?.response?.data);
+		}
+	}
+);
+
+// Logout action
+export const logoutUserAction = createAsyncThunk(
+	'user/logout',
+	async (data, { rejectWithValue, getState, dispatch }) => {
+		try {
+			removeItemFromLocalStorage(LOCALSTORAGE_TOKEN_KEY);
+			return null;
 		} catch (error) {
 			if (!error.response) {
 				throw error;
@@ -106,6 +123,26 @@ const userSlice = createSlice({
 		});
 
 		builder.addCase(loginUserAction.rejected, (state, action) => {
+			state.loading = false;
+			state.serverErr = action?.error?.message;
+			state.appErr = action?.payload?.message;
+		});
+
+		// LOGOUT
+		builder.addCase(logoutUserAction.pending, (state, action) => {
+			state.loading = true;
+			state.appErr = undefined;
+			state.serverErr = undefined;
+		});
+
+		builder.addCase(logoutUserAction.fulfilled, (state, action) => {
+			state.loading = false;
+			state.appErr = undefined;
+			state.serverErr = undefined;
+			state.userAuth = action?.payload;
+		});
+
+		builder.addCase(logoutUserAction.rejected, (state, action) => {
 			state.loading = false;
 			state.serverErr = action?.error?.message;
 			state.appErr = action?.payload?.message;
