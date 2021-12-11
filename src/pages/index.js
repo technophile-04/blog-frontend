@@ -1,5 +1,6 @@
-import Login from './Login';
-import Register from './Register';
-import Home from './Home';
+import Login from './public/Login';
+import Register from './public/Register';
+import Home from './public/Home';
+import AddNewCategory from './admin/Categories/AddNewCategory';
 
-export { Login, Register, Home };
+export { Login, Register, Home, AddNewCategory };

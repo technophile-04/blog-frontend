@@ -2,7 +2,7 @@ import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-import { registerUserAction } from '../redux/slices/user/userSlice';
+import { registerUserAction } from '../../redux/slices/user/userSlice';
 import { Navigate } from 'react-router-dom';
 
 // Form Schema
@@ -20,7 +20,7 @@ const formSchema = Yup.object({
 const Register = () => {
 	const dispatch = useDispatch();
 	const { loading, appErr, serverErr, registerdUser } = useSelector(
-		(store) => store.user
+		(store) => store.users
 	);
 
 	// console.log(registerdUser);

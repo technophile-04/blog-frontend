@@ -5,7 +5,7 @@ import PrivateNavbar from './privateNav/PrivateNavbar';
 import PublicNavbar from './publicNav/PublicNavbar';
 
 const Navbar = () => {
-	const { userAuth } = useSelector((store) => store.user);
+	const { userAuth } = useSelector((store) => store.users);
 
 	if (userAuth) {
 		return <>{userAuth.isAdmin ? <AdminNavbar /> : <PrivateNavbar />}</>;

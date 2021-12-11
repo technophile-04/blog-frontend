@@ -1,9 +1,9 @@
 import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import poster from '../img/poster.png';
+import poster from '../../img/poster.png';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUserAction } from '../redux/slices/user/userSlice';
+import { loginUserAction } from '../../redux/slices/user/userSlice';
 import { Navigate } from 'react-router-dom';
 
 // Form Schema
@@ -15,7 +15,7 @@ const formSchema = Yup.object({
 const Login = () => {
 	const dispatch = useDispatch();
 	const { userAuth, loading, serverErr, appErr } = useSelector(
-		(store) => store.user
+		(store) => store.users
 	);
 	// console.log('UserAuth', userAuth);
 

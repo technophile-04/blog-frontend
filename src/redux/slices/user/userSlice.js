@@ -48,7 +48,7 @@ export const loginUserAction = createAsyncThunk(
 			const { data } = await axios.post(API_URLS.login(), userData, config);
 
 			setItemInLocalStorage(LOCALSTORAGE_TOKEN_KEY, data);
-			toast.success('Successfully Logged in!');
+			toast.success(`Successfully Logged in,Welcome ${data.firstName}!`);
 
 			return data;
 		} catch (error) {
