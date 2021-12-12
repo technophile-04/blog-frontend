@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { fetchAllCategoriesAction } from '../../../redux/slices/category/categorySlice';
 import Loader from '../../../components/Loader';
+import DateFormatter from '../../../components/DateFormatter';
 
 const CategoryList = () => {
 	const dispatch = useDispatch();
@@ -90,8 +91,7 @@ const CategoryList = () => {
 													{category.title}
 												</td>
 												<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-													{/* <DateFormatter date={category?.createdAt} /> */}
-													CreatedAt
+													<DateFormatter date={category?.createdAt} />
 												</td>
 												<Link to="/">
 													<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
