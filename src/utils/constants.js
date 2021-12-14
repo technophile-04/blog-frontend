@@ -5,4 +5,7 @@ export const API_URLS = {
 	login: () => `${API_ROOT}/users/login`,
 	createCategory: () => `${API_ROOT}/categories`,
 	fetchAllCategories: () => `${API_ROOT}/categories`,
+	updateCategory: (id) => `${API_ROOT}/categories/${id}`,
+	deleteCategory: (id) => `${API_ROOT}/categories/${id}`,
+	fetchCategory: (id) => `${API_ROOT}/categories/${id}`,
 };

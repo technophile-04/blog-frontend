@@ -19,7 +19,7 @@ const formSchema = Yup.object({
 //-------------------------------
 const Register = () => {
 	const dispatch = useDispatch();
-	const { loading, appErr, serverErr, registerdUser } = useSelector(
+	const { loading, appErr, serverErr, registerdUser, userAuth } = useSelector(
 		(store) => store.users
 	);
 
@@ -38,8 +38,8 @@ const Register = () => {
 		validationSchema: formSchema,
 	});
 
-	if (registerdUser) {
-		return <Navigate to="/profile" />;
+	if (registerdUser || userAuth) {
+		return <Navigate to="/" />;
 	}
 
 	return (

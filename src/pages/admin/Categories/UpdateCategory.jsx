@@ -1,32 +1,45 @@
-import { PlusCircleIcon, BookOpenIcon } from '@heroicons/react/solid';
+import {
+	PlusCircleIcon,
+	BookOpenIcon,
+	TrashIcon,
+} from '@heroicons/react/solid';
 import { useFormik } from 'formik';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import * as Yup from 'yup';
-import { createCategoryAction } from '../../../redux/slices/category/categorySlice';
+import {
+	deleteCategoryAction,
+	fetchCategoryAction,
+	updateCategoriesAction,
+} from '../../../redux/slices/category/categorySlice';
 
 const formSchema = Yup.object({
 	title: Yup.string().required('Category Name is required!'),
 });
 
-const AddNewCategory = () => {
-	const { loading, serverErr, appErr } = useSelector(
+const UpdateCategory = () => {
+	const { loading, serverErr, appErr, category } = useSelector(
 		(store) => store.categories
 	);
 	const dispatch = useDispatch();
+	const { id } = useParams();
 	const navigate = useNavigate();
-
 	const formik = useFormik({
+		enableReinitialize: true,
 		initialValues: {
-			title: '',
+			title: `${category?.title}`,
 		},
 		onSubmit: (values) => {
-			console.log(values);
-			dispatch(createCategoryAction(values));
-			navigate('/category-list');
+			dispatch(updateCategoriesAction({ id, title: values.title }));
+			navigate(-1);
 		},
 		validationSchema: formSchema,
 	});
+
+	useEffect(() => {
+		dispatch(fetchCategoryAction(id));
+	}, [dispatch, id]);
 
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -34,7 +47,7 @@ const AddNewCategory = () => {
 				<div>
 					<BookOpenIcon className="mx-auto h-12 w-auto" />
 					<h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-						Add New Category
+						Update Category
 					</h2>
 					<p className="mt-2 text-center text-sm text-gray-600">
 						<p className="font-medium text-indigo-600 hover:text-indigo-500">
@@ -83,7 +96,26 @@ const AddNewCategory = () => {
 										aria-hidden="true"
 									/>
 								</span>
-								{loading ? 'Please wait...' : 'Add new Category'}
+								{loading ? 'Please wait...' : 'Update Category'}
+							</button>
+							<button
+								type="button"
+								onClick={() => {
+									console.log(id);
+									dispatch(deleteCategoryAction(id));
+									navigate(-1);
+								}}
+								className={`group relative w-full flex justify-center py-2 px-4  mt-3 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
+									loading && 'cursor-wait'
+								}`}
+							>
+								<span className="absolute left-0 inset-y-0 flex items-center pl-3">
+									<TrashIcon
+										className="h-5 w-5 text-yellow-500 group-hover:text-indigo-400"
+										aria-hidden="true"
+									/>
+								</span>
+								{loading ? 'Please wait...' : 'Delete Category'}
 							</button>
 						</div>
 					</div>
@@ -93,4 +125,4 @@ const AddNewCategory = () => {
 	);
 };
 
-export default AddNewCategory;
+export default UpdateCategory;
