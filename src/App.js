@@ -2,10 +2,11 @@ import { Toaster } from 'react-hot-toast';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navigation/Navbar';
 import PrivateAdminRoute from './components/PrivateAdminRoute';
-// import PrivateRoute from './components/PrivateRoute';
+import PrivateRoute from './components/PrivateRoute';
 import { AddNewCategory, Home, Login, Register } from './pages';
 import CategoryList from './pages/admin/Categories/CategoryList';
 import UpdateCategory from './pages/admin/Categories/UpdateCategory';
+import CreatePost from './pages/private/CreatePost';
 
 function App() {
 	return (
@@ -37,6 +38,14 @@ function App() {
 						<PrivateAdminRoute>
 							<CategoryList />
 						</PrivateAdminRoute>
+					}
+				/>
+				<Route
+					path="/create-post"
+					element={
+						<PrivateRoute>
+							<CreatePost />
+						</PrivateRoute>
 					}
 				/>
 				<Route path="/register" element={<Register />} />
