@@ -46,16 +46,35 @@ export const createPostAction = createAsyncThunk(
 	}
 );
 
+export const fetchAllPostsAction = createAsyncThunk(
+	'posts/fetchAll',
+	async (category, { rejectWithValue, getState, dispatch }) => {
+		try {
+			const { data } = await axios.get(API_URLS.fetchAllPosts(category));
+
+			return data;
+		} catch (error) {
+			if (!error.response) {
+				throw error;
+			}
+
+			return rejectWithValue(error.response?.data);
+		}
+	}
+);
+
 const postSlice = createSlice({
 	name: 'post',
 	initialState: {
 		post: undefined,
+		allPosts: undefined,
 		loading: false,
 		appErr: undefined,
 		serverErr: undefined,
 		isCreated: false,
 	},
 	extraReducers: (builder) => {
+		// CREATE POST
 		builder.addCase(createPostAction.pending, (state, action) => {
 			state.loading = true;
 			state.appErr = undefined;
@@ -75,6 +94,24 @@ const postSlice = createSlice({
 		});
 
 		builder.addCase(createPostAction.rejected, (state, action) => {
+			state.loading = false;
+			state.appErr = action?.payload?.message;
+			state.serverErr = action?.error?.message;
+		});
+
+		// FETCH ALL POSTS
+		builder.addCase(fetchAllPostsAction.pending, (state, action) => {
+			state.loading = false;
+			state.appErr = undefined;
+			state.serverErr = undefined;
+		});
+		builder.addCase(fetchAllPostsAction.fulfilled, (state, action) => {
+			state.allPosts = action?.payload;
+			state.loading = false;
+			state.appErr = undefined;
+			state.serverErr = undefined;
+		});
+		builder.addCase(fetchAllPostsAction.rejected, (state, action) => {
 			state.loading = false;
 			state.appErr = action?.payload?.message;
 			state.serverErr = action?.error?.message;

@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navigation/Navbar';
 import PrivateAdminRoute from './components/PrivateAdminRoute';
 import PrivateRoute from './components/PrivateRoute';
-import { AddNewCategory, Home, Login, Register } from './pages';
+import { AddNewCategory, Home, Login, Register, PostList } from './pages';
 import CategoryList from './pages/admin/Categories/CategoryList';
 import UpdateCategory from './pages/admin/Categories/UpdateCategory';
 import CreatePost from './pages/private/CreatePost';
@@ -50,6 +50,7 @@ function App() {
 				/>
 				<Route path="/register" element={<Register />} />
 				<Route path="/login" element={<Login />} />
+				<Route path="/posts" element={<PostList />} />
 			</Routes>
 		</BrowserRouter>
 	);

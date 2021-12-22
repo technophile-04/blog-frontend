@@ -9,4 +9,5 @@ export const API_URLS = {
 	deleteCategory: (id) => `${API_ROOT}/categories/${id}`,
 	fetchCategory: (id) => `${API_ROOT}/categories/${id}`,
 	createPost: () => `${API_ROOT}/posts`,
+	fetchAllPosts: (category) => `${API_ROOT}/posts?category=${category}`,
 };

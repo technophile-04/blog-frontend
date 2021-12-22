@@ -39,19 +39,7 @@ export const fetchAllCategoriesAction = createAsyncThunk(
 	'category/fetchCategories',
 	async (payload, { rejectWithValue, getState }) => {
 		try {
-			const { users } = getState();
-			// console.log(users.userAuth.token);
-
-			const config = {
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${users.userAuth.token}`,
-				},
-			};
-
-			console.log(config);
-
-			const { data } = await axios.get(API_URLS.fetchAllCategories(), config);
+			const { data } = await axios.get(API_URLS.fetchAllCategories());
 
 			return data;
 		} catch (error) {
