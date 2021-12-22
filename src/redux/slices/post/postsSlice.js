@@ -1,6 +1,10 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { API_URLS } from '../../../utils/constants';
 import axios from 'axios';
+import toast from 'react-hot-toast';
+
+// reset post action
+export const resetPostAction = createAction('post/reset');
 
 // Create post action
 export const createPostAction = createAsyncThunk(
@@ -29,14 +33,15 @@ export const createPostAction = createAsyncThunk(
 				formData,
 				config
 			);
-
+			toast.success('Successfully created post !');
+			dispatch(resetPostAction());
 			return data;
 		} catch (error) {
 			if (!error.response) {
 				throw error;
 			}
-
-			return rejectWithValue(error?.response?.data);
+			toast.error('Error creating post');
+			return rejectWithValue(error.response?.data);
 		}
 	}
 );
@@ -48,6 +53,7 @@ const postSlice = createSlice({
 		loading: false,
 		appErr: undefined,
 		serverErr: undefined,
+		isCreated: false,
 	},
 	extraReducers: (builder) => {
 		builder.addCase(createPostAction.pending, (state, action) => {
@@ -56,11 +62,15 @@ const postSlice = createSlice({
 			state.serverErr = undefined;
 		});
 
+		builder.addCase(resetPostAction, (state, action) => {
+			state.isCreated = true;
+		});
+
 		builder.addCase(createPostAction.fulfilled, (state, action) => {
 			state.loading = false;
-			console.log(action?.payload);
 			state.post = action?.payload;
 			state.appErr = undefined;
+			state.isCreated = false;
 			state.serverErr = undefined;
 		});
 

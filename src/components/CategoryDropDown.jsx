@@ -34,9 +34,7 @@ const CategoryDropDown = (props) => {
 				isLoading={loading}
 				isDisabled={loading}
 			/>
-			<div className="text-red-500" style={{ marginTop: '0.25rem' }}>
-				{props?.touched && props?.error}
-			</div>
+			<div className="text-red-500">{props?.touched && props?.error}</div>
 		</>
 	);
 };

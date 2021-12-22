@@ -4,6 +4,8 @@ import { createPostAction } from '../../redux/slices/post/postsSlice';
 import { useDispatch } from 'react-redux';
 import CategoryDropDown from '../../components/CategoryDropDown';
 import DropZone from 'react-dropzone';
+import { useSelector } from 'react-redux';
+import { Navigate } from 'react-router-dom';
 
 const formSchema = Yup.object({
 	title: Yup.string().required('Title is required'),
@@ -13,6 +15,9 @@ const formSchema = Yup.object({
 });
 
 const CreatePost = () => {
+	const { isCreated, loading, serverErr, appErr } = useSelector(
+		(state) => state.posts
+	);
 	const dispatch = useDispatch();
 
 	const formik = useFormik({
@@ -37,6 +42,10 @@ const CreatePost = () => {
 		validationSchema: formSchema,
 	});
 
+	if (isCreated) {
+		return <Navigate to="/posts" />;
+	}
+
 	return (
 		<>
 			<div className="min-h-screen bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -51,6 +60,14 @@ const CreatePost = () => {
 							profanity
 						</p>
 					</p>
+
+					{serverErr || appErr ? (
+						<p className="mt-2 text-center text-sm text-gray-600">
+							<p className="font-medium text-xl text-red-600">
+								{`${serverErr} - ${appErr}`}
+							</p>
+						</p>
+					) : null}
 				</div>
 				<div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
 					<div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
@@ -79,13 +96,18 @@ const CreatePost = () => {
 									{formik.touched.title && formik.errors.title}
 								</div>
 							</div>
-							<CategoryDropDown
-								value={formik.values?.category?.label}
-								onChange={formik.setFieldValue}
-								onBlur={formik.setFieldTouched}
-								error={formik.errors.category}
-								touched={formik.touched.category}
-							/>
+							<div>
+								<label className="block text-sm font-medium text-gray-700">
+									Select Category
+								</label>
+								<CategoryDropDown
+									value={formik.values?.category?.label}
+									onChange={formik.setFieldValue}
+									onBlur={formik.setFieldTouched}
+									error={formik.errors.category}
+									touched={formik.touched.category}
+								/>
+							</div>
 							<div>
 								<label
 									htmlFor="password"
@@ -108,42 +130,53 @@ const CreatePost = () => {
 									{formik.touched.description && formik.errors.description}
 								</div>
 							</div>
-							<div className="flex flex-1 flex-col items-center p-5 border-2 rounded-sm border-gray-400 border-dashed text-gray-400 transition-all duration-100 ease-in-out container">
-								<DropZone
-									onDrop={(acceptedFile) => {
-										formik.setFieldValue('image', acceptedFile[0]);
-									}}
-									accept={'image/jpeg,image/png'}
-									onBlur={formik.handleBlur('image')}
+
+							<div>
+								<label
+									htmlFor="password"
+									className="block text-sm font-medium mb-1 text-gray-700"
 								>
-									{({ getRootProps, getInputProps }) => {
-										return (
-											<div className="container">
-												<div
-													{...getRootProps({
-														className: 'dropzone',
-														onDrop: (event) => event.stopPropagation(),
-													})}
-												>
-													<input {...getInputProps()} />
-													<p className="text-lg text-gray-500 text-center cursor-pointer p-1">
-														Click here to select image
-													</p>
+									Select an image
+								</label>
+								<div className="flex flex-1 flex-col items-center p-5 border-2 rounded-sm border-gray-400 border-dashed text-gray-400 transition-all duration-100 ease-in-out container">
+									<DropZone
+										onDrop={(acceptedFile) => {
+											formik.setFieldValue('image', acceptedFile[0]);
+										}}
+										accept={'image/jpeg,image/png'}
+										onBlur={formik.handleBlur('image')}
+									>
+										{({ getRootProps, getInputProps }) => {
+											return (
+												<div className="container">
+													<div
+														{...getRootProps({
+															className: 'dropzone',
+															onDrop: (event) => event.stopPropagation(),
+														})}
+													>
+														<input {...getInputProps()} />
+														<p className="text-lg text-gray-500 text-center cursor-pointer p-1">
+															Click here to select image
+														</p>
+													</div>
+													{/* Err msg */}
+													<div className="text-red-500">
+														{formik.touched.image && formik.errors.image}
+													</div>
 												</div>
-												{/* Err msg */}
-												<div className="text-red-500">
-													{formik.touched.image && formik.errors.image}
-												</div>
-											</div>
-										);
-									}}
-								</DropZone>
+											);
+										}}
+									</DropZone>
+								</div>
 							</div>
 							<div>
 								{/* Submit btn */}
 								<button
 									type="submit"
-									className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+									className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
+										loading && 'cursor-wait'
+									}`}
 								>
 									Create
 								</button>

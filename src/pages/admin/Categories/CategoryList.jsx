@@ -65,7 +65,7 @@ const CategoryList = () => {
 									</thead>
 									<tbody>
 										{categoryList?.map((category) => (
-											<tr className="bg-gray-50">
+											<tr className="bg-gray-50" key={category._id}>
 												<td className="px-6 py-4 whitespace-nowrap">
 													<div className="flex items-center">
 														<div className="flex-shrink-0 h-10 w-10">
