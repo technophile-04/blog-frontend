@@ -10,4 +10,6 @@ export const API_URLS = {
 	fetchCategory: (id) => `${API_ROOT}/categories/${id}`,
 	createPost: () => `${API_ROOT}/posts`,
 	fetchAllPosts: (category) => `${API_ROOT}/posts?category=${category}`,
+	toggleLike: () => `${API_ROOT}/posts/likes`,
+	toggleDislike: () => `${API_ROOT}/posts/dislikes`,
 };

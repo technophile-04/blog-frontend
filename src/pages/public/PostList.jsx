@@ -4,7 +4,11 @@ import Loader from '../../components/Loader';
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import { fetchAllPostsAction } from '../../redux/slices/post/postsSlice';
+import {
+	fetchAllPostsAction,
+	toggleDislikesAction,
+	toggleLikeToPostAction,
+} from '../../redux/slices/post/postsSlice';
 import DateFormatter from '../../components/DateFormatter';
 import { fetchAllCategoriesAction } from '../../redux/slices/category/categorySlice';
 import { HashLoader } from 'react-spinners';
@@ -17,9 +21,8 @@ const override = css`
 
 const PostList = () => {
 	const dispatch = useDispatch();
-	const { allPosts, loading, appErr, serverErr } = useSelector(
-		(state) => state.posts
-	);
+	const { allPosts, loading, appErr, serverErr, likedPost, disLikedPost } =
+		useSelector((state) => state.posts);
 
 	const {
 		categoryList,
@@ -28,8 +31,13 @@ const PostList = () => {
 		serverErr: catServerErr,
 	} = useSelector((state) => state.categories);
 
+	const { userAuth } = useSelector((state) => state.users);
+
 	useEffect(() => {
 		dispatch(fetchAllPostsAction(''));
+	}, [dispatch, likedPost, disLikedPost]);
+
+	useEffect(() => {
 		dispatch(fetchAllCategoriesAction());
 	}, [dispatch]);
 
@@ -113,7 +121,6 @@ const PostList = () => {
 										>
 											<div class="mb-10  w-full lg:w-1/4 px-3">
 												<Link to={`/posts/${post._id}`}>
-													{/* Post image */}
 													<img
 														class="w-full h-full object-cover rounded"
 														src={`${post.image}`}
@@ -124,9 +131,24 @@ const PostList = () => {
 												<div className="flex flex-row bg-gray-300 justify-center w-full  items-center ">
 													{/* Likes */}
 													<div className="flex flex-row justify-center items-center ml-4 mr-4 pb-2 pt-1">
-														{/* Togle like  */}
-														<div className="">
-															<ThumbUpIcon className="h-7 w-7 text-indigo-600 cursor-pointer" />
+														<div>
+															{post.likes?.find(
+																(id) => id === userAuth?._id
+															) ? (
+																<ThumbUpIcon
+																	className="h-7 w-7 text-indigo-600 cursor-pointer"
+																	onClick={() =>
+																		dispatch(toggleLikeToPostAction(post._id))
+																	}
+																/>
+															) : (
+																<ThumbUpIcon
+																	className="h-7 w-7 text-gray-600 cursor-pointer"
+																	onClick={() =>
+																		dispatch(toggleLikeToPostAction(post._id))
+																	}
+																/>
+															)}
 														</div>
 														<div className="pl-2 text-gray-600">
 															{post.likes?.length}
@@ -135,7 +157,23 @@ const PostList = () => {
 													{/* Dislike */}
 													<div className="flex flex-row  justify-center items-center ml-4 mr-4 pb-2 pt-1">
 														<div>
-															<ThumbDownIcon className="h-7 w-7 cursor-pointer text-gray-600" />
+															{post.dislikes?.find(
+																(id) => id === userAuth?._id
+															) ? (
+																<ThumbDownIcon
+																	className="h-7 w-7 cursor-pointer text-indigo-600"
+																	onClick={() =>
+																		dispatch(toggleDislikesAction(post._id))
+																	}
+																/>
+															) : (
+																<ThumbDownIcon
+																	className="h-7 w-7 cursor-pointer text-gray-600"
+																	onClick={() =>
+																		dispatch(toggleDislikesAction(post._id))
+																	}
+																/>
+															)}
 														</div>
 														<div className="pl-2 text-gray-600">
 															{post.dislikes?.length}

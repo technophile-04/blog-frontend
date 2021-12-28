@@ -46,11 +46,73 @@ export const createPostAction = createAsyncThunk(
 	}
 );
 
+// Fetch all post action
 export const fetchAllPostsAction = createAsyncThunk(
 	'posts/fetchAll',
 	async (category, { rejectWithValue, getState, dispatch }) => {
 		try {
 			const { data } = await axios.get(API_URLS.fetchAllPosts(category));
+
+			return data;
+		} catch (error) {
+			if (!error.response) {
+				throw error;
+			}
+
+			return rejectWithValue(error.response?.data);
+		}
+	}
+);
+
+// Toggle likes action
+export const toggleLikeToPostAction = createAsyncThunk(
+	'posts/toggleLike',
+	async (postId, { rejectWithValue, getState, dispatch }) => {
+		try {
+			const { userAuth } = getState().users;
+
+			const config = {
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${userAuth.token}`,
+				},
+			};
+
+			const { data } = await axios.put(
+				API_URLS.toggleLike(),
+				{ postId },
+				config
+			);
+
+			return data;
+		} catch (error) {
+			if (!error.response) {
+				throw error;
+			}
+			return rejectWithValue(error.response?.data);
+		}
+	}
+);
+
+// Toggle dislike action
+export const toggleDislikesAction = createAsyncThunk(
+	'posts/toggleDislike',
+	async (postId, { rejectWithValue, getState, dispatch }) => {
+		try {
+			const { userAuth } = getState().users;
+
+			const config = {
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${userAuth.token}`,
+				},
+			};
+
+			const { data } = await axios.put(
+				API_URLS.toggleDislike(),
+				{ postId },
+				config
+			);
 
 			return data;
 		} catch (error) {
@@ -72,6 +134,8 @@ const postSlice = createSlice({
 		appErr: undefined,
 		serverErr: undefined,
 		isCreated: false,
+		likedPost: undefined,
+		disLikedPost: undefined,
 	},
 	extraReducers: (builder) => {
 		// CREATE POST
@@ -112,6 +176,46 @@ const postSlice = createSlice({
 			state.serverErr = undefined;
 		});
 		builder.addCase(fetchAllPostsAction.rejected, (state, action) => {
+			state.loading = false;
+			state.appErr = action?.payload?.message;
+			state.serverErr = action?.error?.message;
+		});
+
+		// Toogle like
+		builder.addCase(toggleLikeToPostAction.pending, (state, action) => {
+			state.loading = false;
+			state.appErr = undefined;
+			state.serverErr = undefined;
+		});
+
+		builder.addCase(toggleLikeToPostAction.fulfilled, (state, action) => {
+			state.likedPost = action?.payload;
+			state.loading = false;
+			state.appErr = undefined;
+			state.serverErr = undefined;
+		});
+
+		builder.addCase(toggleLikeToPostAction.rejected, (state, action) => {
+			state.loading = false;
+			state.appErr = action?.payload?.message;
+			state.serverErr = action?.error?.message;
+		});
+
+		// Toggle Dislike
+		builder.addCase(toggleDislikesAction.pending, (state, action) => {
+			state.loading = false;
+			state.appErr = undefined;
+			state.serverErr = undefined;
+		});
+
+		builder.addCase(toggleDislikesAction.fulfilled, (state, action) => {
+			state.disLikedPost = action?.payload;
+			state.loading = false;
+			state.appErr = undefined;
+			state.serverErr = undefined;
+		});
+
+		builder.addCase(toggleDislikesAction.rejected, (state, action) => {
 			state.loading = false;
 			state.appErr = action?.payload?.message;
 			state.serverErr = action?.error?.message;
