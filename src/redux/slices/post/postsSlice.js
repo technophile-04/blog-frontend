@@ -125,6 +125,23 @@ export const toggleDislikesAction = createAsyncThunk(
 	}
 );
 
+// Fetch a post action
+export const fetchPostAction = createAsyncThunk(
+	'posts/fetchPost',
+	async (postId, { rejectWithValue, getState, dispatch }) => {
+		try {
+			const { data } = await axios.get(API_URLS.fetchPost(postId));
+			return data;
+		} catch (error) {
+			if (!error.response) {
+				throw error;
+			}
+
+			return rejectWithValue(error.response?.data);
+		}
+	}
+);
+
 const postSlice = createSlice({
 	name: 'post',
 	initialState: {
@@ -216,6 +233,26 @@ const postSlice = createSlice({
 		});
 
 		builder.addCase(toggleDislikesAction.rejected, (state, action) => {
+			state.loading = false;
+			state.appErr = action?.payload?.message;
+			state.serverErr = action?.error?.message;
+		});
+
+		// Fetch a POST
+		builder.addCase(fetchPostAction.pending, (state, action) => {
+			state.loading = true;
+			state.appErr = undefined;
+			state.serverErr = undefined;
+		});
+
+		builder.addCase(fetchPostAction.fulfilled, (state, action) => {
+			state.loading = false;
+			state.post = action?.payload;
+			state.appErr = undefined;
+			state.serverErr = undefined;
+		});
+
+		builder.addCase(fetchPostAction.rejected, (state, action) => {
 			state.loading = false;
 			state.appErr = action?.payload?.message;
 			state.serverErr = action?.error?.message;

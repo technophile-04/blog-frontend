@@ -3,10 +3,14 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navigation/Navbar';
 import PrivateAdminRoute from './components/PrivateAdminRoute';
 import PrivateRoute from './components/PrivateRoute';
-import { AddNewCategory, Home, Login, Register, PostList } from './pages';
-import CategoryList from './pages/admin/Categories/CategoryList';
-import UpdateCategory from './pages/admin/Categories/UpdateCategory';
-import CreatePost from './pages/private/CreatePost';
+import { Home, Login, Register, PostList, PostDetails } from './pages/public';
+import {
+	AddNewCategory,
+	CategoryList,
+	UpdateCategory,
+} from './pages/admin/Categories';
+
+import { CreatePost } from './pages/private';
 
 function App() {
 	return (
@@ -51,6 +55,7 @@ function App() {
 				<Route path="/register" element={<Register />} />
 				<Route path="/login" element={<Login />} />
 				<Route path="/posts" element={<PostList />} />
+				<Route path="/posts/:postId" element={<PostDetails />} />
 			</Routes>
 		</BrowserRouter>
 	);

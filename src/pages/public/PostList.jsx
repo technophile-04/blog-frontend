@@ -199,7 +199,7 @@ const PostList = () => {
 												<p class="text-gray-300">{post.description}</p>
 												{/* Read more */}
 												<Link
-													to="/"
+													to={`/posts/${post._id}`}
 													className="text-indigo-500 hover:underline"
 												>
 													Read More..
