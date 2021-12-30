@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 
 // reset post action
 export const resetPostAction = createAction('post/reset');
+export const resetUpdatePostAction = createAction('post/resetUpdate');
 
 // Create post action
 export const createPostAction = createAsyncThunk(
@@ -142,6 +143,34 @@ export const fetchPostAction = createAsyncThunk(
 	}
 );
 
+// Updata a post action
+export const updatePostAction = createAsyncThunk(
+	'posts/updatePost',
+	async ({ postId, ...body }, { rejectWithValue, getState, dispatch }) => {
+		try {
+			const { userAuth } = getState().users;
+
+			const config = {
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${userAuth.token}`,
+				},
+			};
+
+			const { data } = axios.put(API_URLS.updatePost(postId), body, config);
+			dispatch(resetUpdatePostAction());
+			toast.success(`Succefully updated the post!`);
+			return data;
+		} catch (error) {
+			if (!error.response) {
+				throw error;
+			}
+			toast.error(`Error in  updating the post!`);
+			return rejectWithValue(error.response?.data);
+		}
+	}
+);
+
 const postSlice = createSlice({
 	name: 'post',
 	initialState: {
@@ -153,6 +182,7 @@ const postSlice = createSlice({
 		isCreated: false,
 		likedPost: undefined,
 		disLikedPost: undefined,
+		isUpdated: false,
 	},
 	extraReducers: (builder) => {
 		// CREATE POST
@@ -256,6 +286,32 @@ const postSlice = createSlice({
 			state.loading = false;
 			state.appErr = action?.payload?.message;
 			state.serverErr = action?.error?.message;
+		});
+
+		// Update a POST
+		builder.addCase(updatePostAction.pending, (state, action) => {
+			state.loading = true;
+			state.appErr = undefined;
+			state.serverErr = undefined;
+		});
+
+		builder.addCase(resetUpdatePostAction, (state, action) => {
+			state.isUpdated = true;
+		});
+
+		builder.addCase(updatePostAction.fulfilled, (state, action) => {
+			state.loading = false;
+			state.post = action?.payload;
+			state.appErr = undefined;
+			state.serverErr = undefined;
+			state.isUpdated = false;
+		});
+
+		builder.addCase(updatePostAction.rejected, (state, action) => {
+			state.loading = false;
+			state.appErr = action?.payload?.message;
+			state.serverErr = action?.error?.message;
+			state.isUpdated = false;
 		});
 	},
 });

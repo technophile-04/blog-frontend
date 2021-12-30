@@ -10,7 +10,7 @@ import {
 	UpdateCategory,
 } from './pages/admin/Categories';
 
-import { CreatePost } from './pages/private';
+import { CreatePost, UpdatePost } from './pages/private';
 
 function App() {
 	return (
@@ -49,6 +49,14 @@ function App() {
 					element={
 						<PrivateRoute>
 							<CreatePost />
+						</PrivateRoute>
+					}
+				/>
+				<Route
+					path="/update-post/:postId"
+					element={
+						<PrivateRoute>
+							<UpdatePost />
 						</PrivateRoute>
 					}
 				/>

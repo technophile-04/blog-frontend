@@ -13,4 +13,5 @@ export const API_URLS = {
 	toggleLike: () => `${API_ROOT}/posts/likes`,
 	toggleDislike: () => `${API_ROOT}/posts/dislikes`,
 	fetchPost: (postId) => `${API_ROOT}/posts/${postId}`,
+	updatePost: (postId) => `${API_ROOT}/posts/${postId}`,
 };

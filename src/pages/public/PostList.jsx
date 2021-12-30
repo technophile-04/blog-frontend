@@ -83,7 +83,7 @@ const PostList = () => {
 												{`${catServerErr}-${appErr}`}
 											</div>
 										) : categoryList?.length === 0 ? (
-											<div className="text-xl text-gray-100 text-center">
+											<div className="text-xl text-yellow-400 text-center">
 												No category
 											</div>
 										) : (
@@ -110,7 +110,7 @@ const PostList = () => {
 								) : appErr || serverErr ? (
 									<p className="text-2xl text-red-500">{`${serverErr}-${appErr}`}</p>
 								) : allPosts?.length === 0 ? (
-									<p className="text-2xl text-red-500 text-center">
+									<p className="text-2xl text-yellow-500 text-center">
 										No posts found
 									</p>
 								) : (

@@ -62,15 +62,17 @@ const PostDetails = () => {
 							<div className="max-w-xl mx-auto">
 								<p className="mb-6 text-left  text-xl text-gray-200">
 									{post?.description}
-									{post?.user._id === userAuth._id ? (
-										<p className="flex">
-											<Link className="p-3" to="/">
-												<PencilAltIcon className="h-8 mt-3 text-yellow-300" />
-											</Link>
-											<button className="ml-3">
-												<TrashIcon className="h-8 mt-3 text-red-600" />
-											</button>
-										</p>
+									{userAuth?._id ? (
+										post?.user._id === userAuth._id ? (
+											<p className="flex">
+												<Link className="p-3" to={`/update-post/${postId}`}>
+													<PencilAltIcon className="h-8 mt-3 text-yellow-300" />
+												</Link>
+												<button className="ml-3">
+													<TrashIcon className="h-8 mt-3 text-red-600" />
+												</button>
+											</p>
+										) : null
 									) : null}
 								</p>
 							</div>
