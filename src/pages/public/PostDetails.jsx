@@ -8,6 +8,8 @@ import {
 } from '../../redux/slices/post/postsSlice';
 import Loader from '../../components/Loader';
 import DateFormatter from '../../components/DateFormatter';
+import AddComment from '../../components/AddComment';
+import CommentsList from '../../components/CommentsList';
 
 const PostDetails = () => {
 	const { postId } = useParams();
@@ -17,9 +19,11 @@ const PostDetails = () => {
 	);
 	const { userAuth } = useSelector((state) => state.users);
 
+	const { comment } = useSelector((state) => state.comments);
+
 	useEffect(() => {
 		dispatch(fetchPostAction(postId));
-	}, [postId, dispatch]);
+	}, [postId, dispatch, comment]);
 
 	if (isDeleted) {
 		return <Navigate to="/posts" />;
@@ -89,10 +93,10 @@ const PostDetails = () => {
 						</div>
 					</div>
 					{/* Add comment Form component here */}
+					<AddComment postId={postId} />
 
 					<div className="flex justify-center  items-center">
-						{/* <CommentsList comments={post?.comments} postId={post?._id} /> */}
-						CommentsList
+						<CommentsList comments={post?.comments} postId={post?._id} />
 					</div>
 				</section>
 			)}
