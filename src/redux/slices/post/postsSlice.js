@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 // reset post action
 export const resetPostAction = createAction('post/reset');
 export const resetUpdatePostAction = createAction('post/resetUpdate');
+export const resetDeletePostAction = createAction('post/resetDelete');
 
 // Create post action
 export const createPostAction = createAsyncThunk(
@@ -171,6 +172,33 @@ export const updatePostAction = createAsyncThunk(
 	}
 );
 
+export const deletePostAction = createAsyncThunk(
+	'posts/delete',
+	async (postId, { rejectWithValue, getState, dispatch }) => {
+		try {
+			const { userAuth } = getState().users;
+
+			const config = {
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${userAuth.token}`,
+				},
+			};
+			const { data } = axios.delete(API_URLS.deletePost(postId), config);
+			console.log(data);
+			toast.success('Post deleted successfully !');
+			dispatch(resetDeletePostAction());
+			return data;
+		} catch (error) {
+			if (!error.response) {
+				throw error;
+			}
+			toast.error(`Error in  deleting the post!`);
+			return rejectWithValue(error.response?.data);
+		}
+	}
+);
+
 const postSlice = createSlice({
 	name: 'post',
 	initialState: {
@@ -183,6 +211,7 @@ const postSlice = createSlice({
 		likedPost: undefined,
 		disLikedPost: undefined,
 		isUpdated: false,
+		isDeleted: false,
 	},
 	extraReducers: (builder) => {
 		// CREATE POST
@@ -312,6 +341,32 @@ const postSlice = createSlice({
 			state.appErr = action?.payload?.message;
 			state.serverErr = action?.error?.message;
 			state.isUpdated = false;
+		});
+
+		// Delete a POST
+		builder.addCase(deletePostAction.pending, (state, action) => {
+			state.loading = true;
+			state.appErr = undefined;
+			state.serverErr = undefined;
+		});
+
+		builder.addCase(resetDeletePostAction, (state, action) => {
+			state.isDeleted = true;
+		});
+
+		builder.addCase(deletePostAction.fulfilled, (state, action) => {
+			state.loading = false;
+			state.post = action?.payload;
+			state.appErr = undefined;
+			state.serverErr = undefined;
+			state.isDeleted = false;
+		});
+
+		builder.addCase(deletePostAction.rejected, (state, action) => {
+			state.loading = false;
+			state.appErr = action?.payload?.message;
+			state.serverErr = action?.error?.message;
+			state.isDeleted = false;
 		});
 	},
 });

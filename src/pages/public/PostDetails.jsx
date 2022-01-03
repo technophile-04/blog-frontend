@@ -1,15 +1,18 @@
 import React, { useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import { PencilAltIcon, TrashIcon } from '@heroicons/react/solid';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchPostAction } from '../../redux/slices/post/postsSlice';
+import {
+	deletePostAction,
+	fetchPostAction,
+} from '../../redux/slices/post/postsSlice';
 import Loader from '../../components/Loader';
 import DateFormatter from '../../components/DateFormatter';
 
 const PostDetails = () => {
 	const { postId } = useParams();
 	const dispatch = useDispatch();
-	const { post, loading, appErr, serverErr } = useSelector(
+	const { post, loading, appErr, serverErr, isDeleted } = useSelector(
 		(state) => state.posts
 	);
 	const { userAuth } = useSelector((state) => state.users);
@@ -17,6 +20,10 @@ const PostDetails = () => {
 	useEffect(() => {
 		dispatch(fetchPostAction(postId));
 	}, [postId, dispatch]);
+
+	if (isDeleted) {
+		return <Navigate to="/posts" />;
+	}
 
 	return (
 		<>
@@ -69,7 +76,10 @@ const PostDetails = () => {
 													<PencilAltIcon className="h-8 mt-3 text-yellow-300" />
 												</Link>
 												<button className="ml-3">
-													<TrashIcon className="h-8 mt-3 text-red-600" />
+													<TrashIcon
+														className="h-8 mt-3 text-red-600"
+														onClick={() => dispatch(deletePostAction(postId))}
+													/>
 												</button>
 											</p>
 										) : null

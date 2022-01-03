@@ -14,4 +14,5 @@ export const API_URLS = {
 	toggleDislike: () => `${API_ROOT}/posts/dislikes`,
 	fetchPost: (postId) => `${API_ROOT}/posts/${postId}`,
 	updatePost: (postId) => `${API_ROOT}/posts/${postId}`,
+	deletePost: (postId) => `${API_ROOT}/posts/${postId}`,
 };
