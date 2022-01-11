@@ -1,10 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 import { API_URLS } from '../../../utils/constants';
 
+// Create comment action
 export const createCommentAction = createAsyncThunk(
 	'comment/create',
-	async (postBody, { rejectWithValue, getState, dispatch }) => {
+	async (commentBody, { rejectWithValue, getState, dispatch }) => {
 		try {
 			const { userAuth } = getState().users;
 			const config = {
@@ -15,7 +17,7 @@ export const createCommentAction = createAsyncThunk(
 			};
 			const { data } = await axios.post(
 				API_URLS.createComment(),
-				postBody,
+				commentBody,
 				config
 			);
 
@@ -30,6 +32,64 @@ export const createCommentAction = createAsyncThunk(
 	}
 );
 
+// delete comment action
+export const deleteCommentAction = createAsyncThunk(
+	'comment/delete',
+	async (commentId, { rejectWithValue, getState, dispatch }) => {
+		try {
+			const { userAuth } = getState().users;
+			const config = {
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${userAuth?.token}`,
+				},
+			};
+
+			const { data } = await axios.delete(
+				API_URLS.deleteComment(commentId),
+				config
+			);
+			toast.success('Comment deleted successfully');
+			return data;
+		} catch (error) {
+			if (!error.response) throw error;
+			toast.error(`Error in  deleting the comment`);
+			return rejectWithValue(error.response?.data);
+		}
+	}
+);
+
+// update comment action
+export const updateCommentAction = createAsyncThunk(
+	'comment/update',
+	async (
+		{ description, commentId },
+		{ rejectWithValue, getState, dispatch }
+	) => {
+		try {
+			const { userAuth } = getState().users;
+			const config = {
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${userAuth?.token}`,
+				},
+			};
+
+			const { data } = await axios.put(
+				API_URLS.updateComment(commentId),
+				{ description },
+				config
+			);
+			toast.success('Comment updated successfully');
+			return data;
+		} catch (error) {
+			if (!error.response) throw error;
+			toast.error(`Error in  updating the comment`);
+			return rejectWithValue(error.response?.data);
+		}
+	}
+);
+
 const commentSlice = createSlice({
 	name: 'comment',
 	initialState: {
@@ -38,6 +98,7 @@ const commentSlice = createSlice({
 		appErr: null,
 		serverErr: null,
 		loading: false,
+		deletedComment: null,
 	},
 	extraReducers: (builder) => {
 		// Create comment
@@ -55,6 +116,46 @@ const commentSlice = createSlice({
 		});
 
 		builder.addCase(createCommentAction.rejected, (state, action) => {
+			state.appErr = action?.payload?.message;
+			state.serverErr = action?.error?.message;
+			state.loading = false;
+		});
+
+		// delete comment
+		builder.addCase(deleteCommentAction.pending, (state, action) => {
+			state.appErr = null;
+			state.serverErr = null;
+			state.loading = true;
+		});
+
+		builder.addCase(deleteCommentAction.fulfilled, (state, action) => {
+			state.deletedComment = action?.payload;
+			state.appErr = null;
+			state.serverErr = null;
+			state.loading = false;
+		});
+
+		builder.addCase(deleteCommentAction.rejected, (state, action) => {
+			state.appErr = action?.payload?.message;
+			state.serverErr = action?.error?.message;
+			state.loading = false;
+		});
+
+		// update comment action
+		builder.addCase(updateCommentAction.pending, (state, action) => {
+			state.appErr = null;
+			state.serverErr = null;
+			state.loading = true;
+		});
+
+		builder.addCase(updateCommentAction.fulfilled, (state, action) => {
+			state.comment = action?.payload;
+			state.appErr = null;
+			state.serverErr = null;
+			state.loading = false;
+		});
+
+		builder.addCase(updateCommentAction.rejected, (state, action) => {
 			state.appErr = action?.payload?.message;
 			state.serverErr = action?.error?.message;
 			state.loading = false;

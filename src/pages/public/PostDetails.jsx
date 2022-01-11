@@ -19,11 +19,11 @@ const PostDetails = () => {
 	);
 	const { userAuth } = useSelector((state) => state.users);
 
-	const { comment } = useSelector((state) => state.comments);
+	const { comment, deletedComment } = useSelector((state) => state.comments);
 
 	useEffect(() => {
 		dispatch(fetchPostAction(postId));
-	}, [postId, dispatch, comment]);
+	}, [postId, dispatch, comment, deletedComment]);
 
 	if (isDeleted) {
 		return <Navigate to="/posts" />;

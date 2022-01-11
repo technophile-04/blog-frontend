@@ -1,11 +1,16 @@
-import { Link } from 'react-router-dom';
-import { PencilAltIcon, TrashIcon } from '@heroicons/react/solid';
+import { PencilAltIcon, TrashIcon, XCircleIcon } from '@heroicons/react/solid';
 import Moment from 'react-moment';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteCommentAction } from '../redux/slices/comment/commentsSlice';
+import { useState } from 'react';
+import AddComment from './AddComment';
 
 const CommentsList = ({ comments }) => {
 	const { userAuth } = useSelector((store) => store.users);
-	console.log(comments);
+	const [isEditing, setIsEditing] = useState(false);
+
+	const dispatch = useDispatch();
+
 	return (
 		<div>
 			<ul className="divide-y bg-gray-700 w-96 divide-gray-200 p-3 mt-5">
@@ -30,7 +35,7 @@ const CommentsList = ({ comments }) => {
 												</h3>
 												<p className="text-bold text-yellow-500 text-base ml-5">
 													<Moment fromNow ago>
-														{comment?.createdAt}
+														{comment?.updatedAt}
 													</Moment>{' '}
 													ago
 												</p>
@@ -42,14 +47,30 @@ const CommentsList = ({ comments }) => {
 											{userAuth?._id &&
 												(userAuth?._id === comment?.user?._id ? (
 													<p className="flex">
-														<Link className="p-3" to="/comment">
+														<button
+															className="p-3"
+															onClick={() => setIsEditing(true)}
+														>
 															<PencilAltIcon className="h-5 mt-3 text-yellow-300" />
-														</Link>
-														<button className="ml-3">
+														</button>
+														<button
+															className="ml-3"
+															onClick={() =>
+																dispatch(deleteCommentAction(comment?._id))
+															}
+														>
 															<TrashIcon className="h-5 mt-3 text-red-600" />
 														</button>
 													</p>
 												) : null)}
+											{isEditing && (
+												<div className="flex items-center justify-center">
+													<AddComment commentId={comment?._id} />
+													<button onClick={() => setIsEditing(false)}>
+														<XCircleIcon className="h-5 text-yellow-300" />
+													</button>
+												</div>
+											)}
 										</div>
 									</div>
 								</li>

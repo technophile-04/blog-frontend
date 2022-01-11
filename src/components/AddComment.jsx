@@ -2,7 +2,10 @@ import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
-import { createCommentAction } from '../redux/slices/comment/commentsSlice';
+import {
+	createCommentAction,
+	updateCommentAction,
+} from '../redux/slices/comment/commentsSlice';
 import { useSelector } from 'react-redux';
 
 //Form schema
@@ -10,7 +13,7 @@ const formSchema = Yup.object({
 	description: Yup.string().required('Description is required'),
 });
 
-const AddComment = ({ postId }) => {
+const AddComment = ({ postId, commentId }) => {
 	const dispatch = useDispatch();
 
 	const { loading } = useSelector((state) => state.comments);
@@ -20,12 +23,21 @@ const AddComment = ({ postId }) => {
 			description: '',
 		},
 		onSubmit: (values) => {
-			const data = {
-				postId,
-				description: values?.description,
-			};
+			if (postId) {
+				const data = {
+					postId,
+					description: values?.description,
+				};
 
-			dispatch(createCommentAction(data));
+				dispatch(createCommentAction(data));
+			} else if (commentId) {
+				const data = {
+					commentId,
+					description: values?.description,
+				};
+
+				dispatch(updateCommentAction(data));
+			}
 		},
 		validationSchema: formSchema,
 	});
@@ -43,7 +55,7 @@ const AddComment = ({ postId }) => {
 					name="text"
 					id="text"
 					className="shadow-sm focus:ring-indigo-500  mr-2 focus:border-indigo-500 block w-full p-2 border-1 sm:text-sm border-gray-300 rounded-md"
-					placeholder="Add New comment"
+					placeholder={commentId ? 'Update comment' : 'Add New comment'}
 				/>
 
 				<button

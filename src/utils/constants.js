@@ -16,4 +16,6 @@ export const API_URLS = {
 	updatePost: (postId) => `${API_ROOT}/posts/${postId}`,
 	deletePost: (postId) => `${API_ROOT}/posts/${postId}`,
 	createComment: () => `${API_ROOT}/comments`,
+	deleteComment: (commentId) => `${API_ROOT}/comments/${commentId}`,
+	updateComment: (commentId) => `${API_ROOT}/comments/${commentId}`,
 };
