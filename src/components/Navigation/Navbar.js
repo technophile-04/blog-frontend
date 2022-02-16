@@ -8,7 +8,15 @@ const Navbar = () => {
 	const { userAuth } = useSelector((store) => store.users);
 
 	if (userAuth) {
-		return <>{userAuth.isAdmin ? <AdminNavbar /> : <PrivateNavbar />}</>;
+		return (
+			<>
+				{userAuth.isAdmin ? (
+					<AdminNavbar isLogin={userAuth} />
+				) : (
+					<PrivateNavbar isLogin={userAuth} />
+				)}
+			</>
+		);
 	} else {
 		return (
 			<>

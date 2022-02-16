@@ -79,6 +79,70 @@ export const logoutUserAction = createAsyncThunk(
 	}
 );
 
+// Fetch other or owns user profile
+export const userProfileAction = createAsyncThunk(
+	'user/profile',
+	async (id, { rejectWithValue, getState, dispatch }) => {
+		try {
+			const { userAuth } = getState().users;
+			console.log(userAuth.token);
+			const config = {
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${userAuth.token}`,
+				},
+			};
+
+			const { data } = await axios.get(API_URLS.fetchProfile(id), config);
+
+			return data;
+		} catch (error) {
+			if (!error.response) {
+				throw error;
+			}
+			toast.error('Erro in findig user profile!');
+			return rejectWithValue(error?.response?.data);
+		}
+	}
+);
+
+// Upload profile profilePhoto
+export const uploadProfilePhotoAction = createAsyncThunk(
+	'user/profile-Photo',
+	async (profileImage, { rejectWithValue, getState, dispatch }) => {
+		try {
+			console.log('inside create post action');
+			const { userAuth } = getState().users;
+			const { image } = profileImage;
+
+			const config = {
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${userAuth.token}`,
+				},
+			};
+
+			const formData = new FormData();
+			formData.append('image', image);
+
+			const { data } = await axios.put(
+				API_URLS.updateProfilePhoto(),
+				formData,
+				config
+			);
+			toast.success('Successfully updated profile photo!');
+			// dispatch(resetPostAction());
+			return data;
+		} catch (error) {
+			if (!error.response) {
+				throw error;
+			}
+			toast.error('Error updating profile photo!');
+			return rejectWithValue(error.response?.data);
+		}
+	}
+);
+
 // Get from localstorage
 const userLoginFromLocalStorage = getItemFromLocalStorage(
 	LOCALSTORAGE_TOKEN_KEY
@@ -92,6 +156,7 @@ const userSlice = createSlice({
 		registerdUser: null,
 		appErr: undefined,
 		serverErr: undefined,
+		profile: undefined,
 	},
 	extraReducers: (builder) => {
 		// REGISTER
@@ -151,6 +216,46 @@ const userSlice = createSlice({
 			state.loading = false;
 			state.serverErr = action?.error?.message;
 			state.appErr = action?.payload?.message;
+		});
+
+		// profile
+		builder.addCase(userProfileAction.pending, (state, action) => {
+			state.loading = true;
+			state.appErr = undefined;
+			state.serverErr = undefined;
+		});
+
+		builder.addCase(userProfileAction.fulfilled, (state, action) => {
+			state.loading = false;
+			state.appErr = undefined;
+			state.serverErr = undefined;
+			state.profile = action?.payload;
+		});
+
+		builder.addCase(userProfileAction.rejected, (state, action) => {
+			state.loading = false;
+			state.serverErr = action?.error?.message;
+			state.appErr = action?.payload?.message;
+		});
+
+		// Update profile photo
+		builder.addCase(uploadProfilePhotoAction.pending, (state, action) => {
+			state.loading = true;
+		});
+
+		builder.addCase(uploadProfilePhotoAction.fulfilled, (state, action) => {
+			state.userAuth = action?.payload;
+			state.profile = action?.payload;
+			state.loading = false;
+			state.appErr = undefined;
+			state.serverErr = undefined;
+		});
+
+		builder.addCase(uploadProfilePhotoAction.rejected, (state, action) => {
+			console.log(action.payload);
+			state.loading = false;
+			state.appErr = action?.payload?.message;
+			state.serverErr = action?.error?.message;
 		});
 	},
 });

@@ -11,7 +11,7 @@ import {
 	LogoutIcon,
 } from '@heroicons/react/outline';
 import { PlusIcon } from '@heroicons/react/solid';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { logoutUserAction } from '../../../redux/slices/user/userSlice';
 
 const navigation = [
@@ -27,10 +27,8 @@ function classNames(...classes) {
 	return classes.filter(Boolean).join(' ');
 }
 
-const AdminNavbar = () => {
+const AdminNavbar = ({ isLogin }) => {
 	const dispatch = useDispatch();
-
-	const { userAuth } = useSelector((store) => store.users);
 
 	const handleLogout = () => {
 		dispatch(logoutUserAction());
@@ -38,7 +36,7 @@ const AdminNavbar = () => {
 
 	//Navigation
 	const userNavigation = [
-		{ name: 'Your Profile', href: `/profile` },
+		{ name: 'Your Profile', href: `/profile/${isLogin?._id}` },
 		{ name: 'Change your password', href: '/update-password' },
 	];
 
@@ -119,7 +117,7 @@ const AdminNavbar = () => {
 														<span className="sr-only">Open user menu</span>
 														<img
 															className="h-8 w-8 rounded-full"
-															src={userAuth?.profilePhoto}
+															src={isLogin?.profilePhoto}
 															alt="Admin Profile"
 														/>
 													</Menu.Button>

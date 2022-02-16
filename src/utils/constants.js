@@ -18,4 +18,6 @@ export const API_URLS = {
 	createComment: () => `${API_ROOT}/comments`,
 	deleteComment: (commentId) => `${API_ROOT}/comments/${commentId}`,
 	updateComment: (commentId) => `${API_ROOT}/comments/${commentId}`,
+	fetchProfile: (userId) => `${API_ROOT}/users/profile/${userId}`,
+	updateProfilePhoto: () => `${API_ROOT}/users/profilephoto-upload`,
 };

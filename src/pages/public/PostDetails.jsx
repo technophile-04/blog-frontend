@@ -93,7 +93,7 @@ const PostDetails = () => {
 						</div>
 					</div>
 					{/* Add comment Form component here */}
-					<AddComment postId={postId} />
+					{userAuth && <AddComment postId={postId} />}
 
 					<div className="flex justify-center  items-center">
 						<CommentsList comments={post?.comments} postId={post?._id} />

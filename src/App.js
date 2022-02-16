@@ -10,7 +10,12 @@ import {
 	UpdateCategory,
 } from './pages/admin/Categories';
 
-import { CreatePost, UpdatePost } from './pages/private';
+import {
+	CreatePost,
+	Profile,
+	UpdatePost,
+	UploadProfilePhoto,
+} from './pages/private';
 
 function App() {
 	return (
@@ -60,10 +65,19 @@ function App() {
 						</PrivateRoute>
 					}
 				/>
+				<Route
+					path="/upload-profile-photo/:userId"
+					element={
+						<PrivateRoute>
+							<UploadProfilePhoto />
+						</PrivateRoute>
+					}
+				/>
 				<Route path="/register" element={<Register />} />
 				<Route path="/login" element={<Login />} />
 				<Route path="/posts" element={<PostList />} />
 				<Route path="/posts/:postId" element={<PostDetails />} />
+				<Route path="/profile/:userId" element={<Profile />} />
 			</Routes>
 		</BrowserRouter>
 	);
