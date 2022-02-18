@@ -4,6 +4,7 @@ import { useFormik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
 import { uploadProfilePhotoAction } from '../../redux/slices/user/userSlice';
+import { Navigate } from 'react-router-dom';
 
 const formSchema = Yup.object({
 	image: Yup.string().required('Image is required'),
@@ -12,7 +13,9 @@ const formSchema = Yup.object({
 export default function UploadProfilePhoto() {
 	const dispatch = useDispatch();
 
-	const { loading, appErr, serverErr } = useSelector((store) => store.users);
+	const { userAuth, loading, appErr, serverErr, isUpdated } = useSelector(
+		(store) => store.users
+	);
 
 	const formik = useFormik({
 		initialValues: {
@@ -20,10 +23,13 @@ export default function UploadProfilePhoto() {
 		},
 		onSubmit: (values) => {
 			dispatch(uploadProfilePhotoAction(values));
-			console.log(values);
 		},
 		validationSchema: formSchema,
 	});
+
+	if (isUpdated) {
+		return <Navigate to={`/profile/${userAuth?._id}`} />;
+	}
 
 	return (
 		<div className="min-h-screen bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">

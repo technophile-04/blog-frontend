@@ -99,7 +99,7 @@ export default function Profile() {
 														{/* Upload profile photo */}
 														{userAuth && userAuth?._id === profile?._id ? (
 															<Link
-																to={`/upload-profile-photo/${profile?.id}`}
+																to={`/upload-profile-photo`}
 																className="inline-flex justify-center w-48 px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
 															>
 																<UploadIcon
@@ -145,16 +145,18 @@ export default function Profile() {
 														{/* Update Profile */}
 
 														<>
-															<Link
-																to="/update-profile"
-																className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
-															>
-																<UserIcon
-																	className="-ml-1 mr-2 h-5 w-5 text-gray-400"
-																	aria-hidden="true"
-																/>
-																<span>Update Profile</span>
-															</Link>
+															{userAuth && userAuth?._id === profile?._id ? (
+																<Link
+																	to="/update-profile"
+																	className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
+																>
+																	<UserIcon
+																		className="-ml-1 mr-2 h-5 w-5 text-gray-400"
+																		aria-hidden="true"
+																	/>
+																	<span>Update Profile</span>
+																</Link>
+															) : null}
 														</>
 														{/* Send Mail */}
 														<Link

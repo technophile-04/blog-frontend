@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, createAction } from '@reduxjs/toolkit';
 import {
 	API_URLS,
 	getItemFromLocalStorage,
@@ -8,6 +8,9 @@ import {
 	setItemInLocalStorage,
 } from '../../../utils';
 import toast from 'react-hot-toast';
+
+// Reser updated user
+const resetUserAction = createAction('user/profile/reset');
 
 //Register
 export const registerUserAction = createAsyncThunk(
@@ -100,7 +103,7 @@ export const userProfileAction = createAsyncThunk(
 			if (!error.response) {
 				throw error;
 			}
-			toast.error('Erro in findig user profile!');
+			toast.error('Error in findig user profile!');
 			return rejectWithValue(error?.response?.data);
 		}
 	}
@@ -111,7 +114,6 @@ export const uploadProfilePhotoAction = createAsyncThunk(
 	'user/profile-Photo',
 	async (profileImage, { rejectWithValue, getState, dispatch }) => {
 		try {
-			console.log('inside create post action');
 			const { userAuth } = getState().users;
 			const { image } = profileImage;
 
@@ -130,15 +132,66 @@ export const uploadProfilePhotoAction = createAsyncThunk(
 				formData,
 				config
 			);
+
+			const userDetails = getItemFromLocalStorage(LOCALSTORAGE_TOKEN_KEY);
+
+			const updatedDetails = {
+				...userDetails,
+				profilePhoto: data.profilePhoto,
+			};
+			removeItemFromLocalStorage(LOCALSTORAGE_TOKEN_KEY);
+			setItemInLocalStorage(LOCALSTORAGE_TOKEN_KEY, updatedDetails);
+
+			dispatch(resetUserAction());
+
 			toast.success('Successfully updated profile photo!');
-			// dispatch(resetPostAction());
-			return data;
+
+			return updatedDetails;
 		} catch (error) {
 			if (!error.response) {
 				throw error;
 			}
 			toast.error('Error updating profile photo!');
 			return rejectWithValue(error.response?.data);
+		}
+	}
+);
+
+// update user
+export const updateUserAction = createAsyncThunk(
+	'user/update',
+	async (user, { rejectWithValue, getState, dispatch }) => {
+		const { userAuth } = getState().users;
+		try {
+			const config = {
+				headers: {
+					'content-type': 'application/json',
+					Authorization: `Bearer ${userAuth.token}`,
+				},
+			};
+			const res = await axios.put(API_URLS.updateProfile(), user, config);
+			const userDetails = getItemFromLocalStorage(LOCALSTORAGE_TOKEN_KEY);
+
+			const updatedDetails = {
+				...userDetails,
+				firstName: res.data.firstName,
+				lastName: res.data.lastName,
+				email: res.data.email,
+				bio: res.data.bio,
+			};
+			removeItemFromLocalStorage(LOCALSTORAGE_TOKEN_KEY);
+			setItemInLocalStorage(LOCALSTORAGE_TOKEN_KEY, updatedDetails);
+
+			dispatch(resetUserAction());
+			toast.success('Successfully updated profile !');
+
+			return updatedDetails;
+		} catch (error) {
+			if (!error?.response) {
+				throw error;
+			}
+			toast.error('Error updating profile!');
+			return rejectWithValue(error?.response?.data);
 		}
 	}
 );
@@ -157,6 +210,7 @@ const userSlice = createSlice({
 		appErr: undefined,
 		serverErr: undefined,
 		profile: undefined,
+		isUpdated: false,
 	},
 	extraReducers: (builder) => {
 		// REGISTER
@@ -249,6 +303,7 @@ const userSlice = createSlice({
 			state.loading = false;
 			state.appErr = undefined;
 			state.serverErr = undefined;
+			state.isUpdated = false;
 		});
 
 		builder.addCase(uploadProfilePhotoAction.rejected, (state, action) => {
@@ -256,6 +311,31 @@ const userSlice = createSlice({
 			state.loading = false;
 			state.appErr = action?.payload?.message;
 			state.serverErr = action?.error?.message;
+		});
+
+		// Update user
+		builder.addCase(updateUserAction.pending, (state, action) => {
+			state.loading = true;
+			state.appErr = undefined;
+			state.serverErr = undefined;
+		});
+
+		builder.addCase(resetUserAction, (state, action) => {
+			state.isUpdated = true;
+		});
+
+		builder.addCase(updateUserAction.fulfilled, (state, action) => {
+			state.loading = false;
+			state.appErr = undefined;
+			state.serverErr = undefined;
+			state.userAuth = action?.payload;
+			state.isUpdated = false;
+		});
+
+		builder.addCase(updateUserAction.rejected, (state, action) => {
+			state.loading = false;
+			state.serverErr = action?.error?.message;
+			state.appErr = action?.payload?.message;
 		});
 	},
 });

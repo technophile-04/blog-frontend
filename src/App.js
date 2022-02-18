@@ -14,6 +14,7 @@ import {
 	CreatePost,
 	Profile,
 	UpdatePost,
+	UpdateProfileForm,
 	UploadProfilePhoto,
 } from './pages/private';
 
@@ -66,10 +67,18 @@ function App() {
 					}
 				/>
 				<Route
-					path="/upload-profile-photo/:userId"
+					path="/upload-profile-photo"
 					element={
 						<PrivateRoute>
 							<UploadProfilePhoto />
+						</PrivateRoute>
+					}
+				/>
+				<Route
+					path="/update-profile"
+					element={
+						<PrivateRoute>
+							<UpdateProfileForm />
 						</PrivateRoute>
 					}
 				/>
