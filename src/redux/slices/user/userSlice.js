@@ -196,6 +196,68 @@ export const updateUserAction = createAsyncThunk(
 	}
 );
 
+// Follow user
+export const followUserAction = createAsyncThunk(
+	'user/follow',
+	async (userId, { rejectWithValue, getState, dispatch }) => {
+		const { userAuth } = getState().users;
+		try {
+			const config = {
+				headers: {
+					'content-type': 'application/json',
+					Authorization: `Bearer ${userAuth.token}`,
+				},
+			};
+			const { data } = await axios.put(
+				API_URLS.followUser(),
+				{ followId: userId },
+				config
+			);
+			toast.success(`You are now following ${data.firstName}`);
+			console.log(data);
+			return data;
+		} catch (error) {
+			if (!error?.response) {
+				throw error;
+			}
+			toast.error('Error following  user!');
+			return rejectWithValue(error?.response?.data);
+		}
+	}
+);
+
+// unFollow user
+export const unFollowUserAction = createAsyncThunk(
+	'user/unfollow',
+	async (userId, { rejectWithValue, getState, dispatch }) => {
+		const { userAuth } = getState().users;
+		try {
+			const config = {
+				headers: {
+					'content-type': 'application/json',
+					Authorization: `Bearer ${userAuth.token}`,
+				},
+			};
+			const { data } = await axios.put(
+				API_URLS.unFollowUser(),
+				{ unfollowId: userId },
+				config
+			);
+
+			toast.success(`unfollowed ${data.firstName}`);
+			console.log(data);
+
+			return data;
+		} catch (error) {
+			if (!error?.response) {
+				throw error;
+			}
+			toast.error('Error unfollowing  user!');
+			return rejectWithValue(error?.response?.data);
+		}
+	}
+);
+
 // Get from localstorage
 const userLoginFromLocalStorage = getItemFromLocalStorage(
 	LOCALSTORAGE_TOKEN_KEY
@@ -336,6 +398,46 @@ const userSlice = createSlice({
 			state.loading = false;
 			state.serverErr = action?.error?.message;
 			state.appErr = action?.payload?.message;
+		});
+
+		// Follow User
+		builder.addCase(followUserAction.pending, (state, action) => {
+			state.followLoading = true;
+			state.followErr = undefined;
+			state.followServerErr = undefined;
+		});
+
+		builder.addCase(followUserAction.fulfilled, (state, action) => {
+			state.followLoading = false;
+			state.followErr = undefined;
+			state.followServerErr = undefined;
+			state.profile = action?.payload;
+		});
+
+		builder.addCase(followUserAction.rejected, (state, action) => {
+			state.followLoading = false;
+			state.followServerErr = action?.error?.message;
+			state.followErr = action?.payload?.message;
+		});
+
+		// unFollow User
+		builder.addCase(unFollowUserAction.pending, (state, action) => {
+			state.followLoading = true;
+			state.followErr = undefined;
+			state.followServerErr = undefined;
+		});
+
+		builder.addCase(unFollowUserAction.fulfilled, (state, action) => {
+			state.followLoading = false;
+			state.followErr = undefined;
+			state.followServerErr = undefined;
+			state.profile = action?.payload;
+		});
+
+		builder.addCase(unFollowUserAction.rejected, (state, action) => {
+			state.followLoading = false;
+			state.followServerErr = action?.error?.message;
+			state.followErr = action?.payload?.message;
 		});
 	},
 });

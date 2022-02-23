@@ -21,4 +21,6 @@ export const API_URLS = {
 	fetchProfile: (userId) => `${API_ROOT}/users/profile/${userId}`,
 	updateProfilePhoto: () => `${API_ROOT}/users/profilephoto-upload`,
 	updateProfile: () => `${API_ROOT}/users`,
+	followUser: () => `${API_ROOT}/users/follow`,
+	unFollowUser: () => `${API_ROOT}/users/unfollow`,
 };

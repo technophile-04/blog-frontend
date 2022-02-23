@@ -15,7 +15,7 @@ const formSchema = Yup.object({
 	category: Yup.object().required('Category is required'),
 });
 
-export default function UpdatePost(props) {
+const UpdatePost = (props) => {
 	const { postId } = useParams();
 	const dispatch = useDispatch();
 
@@ -139,4 +139,6 @@ export default function UpdatePost(props) {
 			</div>
 		</>
 	);
-}
+};
+
+export default UpdatePost;

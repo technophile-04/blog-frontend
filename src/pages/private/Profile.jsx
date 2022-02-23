@@ -9,16 +9,19 @@ import {
 
 import { MailIcon, EyeIcon } from '@heroicons/react/solid';
 import { useDispatch, useSelector } from 'react-redux';
-import { userProfileAction } from '../../redux/slices/user/userSlice';
+import {
+	followUserAction,
+	unFollowUserAction,
+	userProfileAction,
+} from '../../redux/slices/user/userSlice';
 import DateFormatter from '../../components/DateFormatter';
 import Loader from '../../components/Loader';
 
-export default function Profile() {
+const Profile = () => {
 	const { userId } = useParams();
 	const dispatch = useDispatch();
-	const { profile, userAuth, loading, serverErr, appErr } = useSelector(
-		(store) => store.users
-	);
+	const { profile, userAuth, loading, serverErr, appErr, followLoading } =
+		useSelector((store) => store.users);
 	useEffect(() => {
 		dispatch(userProfileAction(userId));
 	}, [userId, dispatch]);
@@ -114,24 +117,15 @@ export default function Profile() {
 													<div className="mt-6 flex flex-col justify-stretch space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4">
 														{/* // Hide follow button from the same */}
 														<div>
-															<button
-																// onClick={() =>
-																//   dispatch(unFollowUserAction(profile?._id))
-																// }
-																className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
-															>
-																<EmojiSadIcon
-																	className="-ml-1 mr-2 h-5 w-5 text-gray-400"
-																	aria-hidden="true"
-																/>
-																<span>Unfollow</span>
-															</button>
-
-															<>
+															{!profile?.followers?.includes(userAuth?._id) ? (
 																<button
 																	// onClick={followHandler}
+																	onClick={() =>
+																		dispatch(followUserAction(userId))
+																	}
 																	type="button"
 																	className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
+																	disabled={followLoading}
 																>
 																	<HeartIcon
 																		className="-ml-1 mr-2 h-5 w-5 text-gray-400"
@@ -139,7 +133,20 @@ export default function Profile() {
 																	/>
 																	<span>Follow </span>
 																</button>
-															</>
+															) : (
+																<button
+																	onClick={() =>
+																		dispatch(unFollowUserAction(userId))
+																	}
+																	className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
+																>
+																	<EmojiSadIcon
+																		className="-ml-1 mr-2 h-5 w-5 text-gray-400"
+																		aria-hidden="true"
+																	/>
+																	<span>Unfollow</span>
+																</button>
+															)}
 														</div>
 
 														{/* Update Profile */}
@@ -271,4 +278,6 @@ export default function Profile() {
 			)}
 		</>
 	);
-}
+};
+
+export default Profile;

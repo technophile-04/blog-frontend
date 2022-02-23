@@ -10,7 +10,7 @@ const formSchema = Yup.object({
 	image: Yup.string().required('Image is required'),
 });
 
-export default function UploadProfilePhoto() {
+const UploadProfilePhoto = () => {
 	const dispatch = useDispatch();
 
 	const { userAuth, loading, appErr, serverErr, isUpdated } = useSelector(
@@ -112,4 +112,6 @@ export default function UploadProfilePhoto() {
 			</div>
 		</div>
 	);
-}
+};
+
+export default UploadProfilePhoto;
