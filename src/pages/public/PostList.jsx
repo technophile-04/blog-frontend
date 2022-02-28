@@ -217,7 +217,7 @@ const PostList = () => {
 													<div className="ml-3">
 														<p className="text-sm font-medium text-gray-900">
 															<Link
-																to="/"
+																to={`/profile/${post?.user?._id}`}
 																className="text-yellow-400 hover:underline "
 															>
 																{`${post.user.firstName}`}{' '}

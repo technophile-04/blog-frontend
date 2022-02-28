@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
 	HeartIcon,
 	EmojiSadIcon,
@@ -20,6 +20,7 @@ import Loader from '../../components/Loader';
 const Profile = () => {
 	const { userId } = useParams();
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 	const { profile, userAuth, loading, serverErr, appErr, followLoading } =
 		useSelector((store) => store.users);
 	useEffect(() => {
@@ -166,18 +167,24 @@ const Profile = () => {
 															) : null}
 														</>
 														{/* Send Mail */}
-														<Link
-															to={`/send-mail?email=xxx`}
-															className="inline-flex justify-center bg-indigo-900 px-4 py-2 border border-yellow-700 shadow-sm text-sm font-medium rounded-md text-gray-700  hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
-														>
-															<MailIcon
-																className="-ml-1 mr-2 h-5 w-5 text-gray-200"
-																aria-hidden="true"
-															/>
-															<span className="text-base mr-2  text-bold text-yellow-500">
-																Send Message
-															</span>
-														</Link>
+														{userAuth?.isAdmin && (
+															<button
+																onClick={() =>
+																	navigate('/send-email', {
+																		state: { email: profile?.email },
+																	})
+																}
+																className="inline-flex justify-center bg-indigo-900 px-4 py-2 border border-yellow-700 shadow-sm text-sm font-medium rounded-md text-gray-700  hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
+															>
+																<MailIcon
+																	className="-ml-1 mr-2 h-5 w-5 text-gray-200"
+																	aria-hidden="true"
+																/>
+																<span className="text-base mr-2  text-bold text-yellow-500">
+																	Send Message
+																</span>
+															</button>
+														)}
 													</div>
 												</div>
 											</div>

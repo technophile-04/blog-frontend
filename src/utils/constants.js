@@ -23,4 +23,5 @@ export const API_URLS = {
 	updateProfile: () => `${API_ROOT}/users`,
 	followUser: () => `${API_ROOT}/users/follow`,
 	unFollowUser: () => `${API_ROOT}/users/unfollow`,
+	sendEmail: () => `${API_ROOT}/sendEmail`,
 };

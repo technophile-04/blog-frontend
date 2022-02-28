@@ -13,6 +13,7 @@ import {
 import {
 	CreatePost,
 	Profile,
+	SendEmail,
 	UpdatePost,
 	UpdateProfileForm,
 	UploadProfilePhoto,
@@ -31,6 +32,14 @@ function App() {
 					element={
 						<PrivateAdminRoute>
 							<AddNewCategory />
+						</PrivateAdminRoute>
+					}
+				/>
+				<Route
+					path="/send-email"
+					element={
+						<PrivateAdminRoute>
+							<SendEmail />
 						</PrivateAdminRoute>
 					}
 				/>
@@ -82,11 +91,19 @@ function App() {
 						</PrivateRoute>
 					}
 				/>
+				<Route
+					path="/profile/:userId"
+					element={
+						<PrivateRoute>
+							<Profile />
+						</PrivateRoute>
+					}
+				/>
+
 				<Route path="/register" element={<Register />} />
 				<Route path="/login" element={<Login />} />
 				<Route path="/posts" element={<PostList />} />
 				<Route path="/posts/:postId" element={<PostDetails />} />
-				<Route path="/profile/:userId" element={<Profile />} />
 			</Routes>
 		</BrowserRouter>
 	);

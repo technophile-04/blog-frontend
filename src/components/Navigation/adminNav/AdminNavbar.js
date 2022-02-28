@@ -114,7 +114,6 @@ const AdminNavbar = ({ isLogin }) => {
 											<>
 												<div>
 													<Menu.Button className="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
-														<span className="sr-only">Open user menu</span>
 														<img
 															className="h-8 w-8 rounded-full"
 															src={isLogin?.profilePhoto}
@@ -139,15 +138,15 @@ const AdminNavbar = ({ isLogin }) => {
 														{userNavigation.map((item) => (
 															<Menu.Item key={item.name}>
 																{({ active }) => (
-																	<a
-																		href={item.href}
+																	<Link
+																		to={item.href}
 																		className={classNames(
 																			active ? 'bg-gray-100' : '',
 																			'block px-4 py-2 text-sm text-gray-700'
 																		)}
 																	>
 																		{item.name}
-																	</a>
+																	</Link>
 																)}
 															</Menu.Item>
 														))}
@@ -200,13 +199,13 @@ const AdminNavbar = ({ isLogin }) => {
 							</div>
 							<div className="mt-3 px-2 space-y-1 sm:px-3">
 								{userNavigation.map((item) => (
-									<a
+									<Link
 										key={item.name}
-										href={item.href}
+										to={item.href}
 										className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
 									>
 										{item.name}
-									</a>
+									</Link>
 								))}
 							</div>
 						</div>
