@@ -190,7 +190,10 @@ const PostList = () => {
 												</div>
 											</div>
 											<div className="w-full lg:w-3/4 px-3">
-												<Link to="/" className="hover:underline">
+												<Link
+													to={`/posts/${post._id}`}
+													className="hover:underline"
+												>
 													<h3 className="mb-1 text-2xl text-green-400 font-bold font-heading">
 														{post?.title}
 													</h3>
@@ -206,7 +209,7 @@ const PostList = () => {
 												{/* User Avatar */}
 												<div className="mt-6 flex items-center">
 													<div className="flex-shrink-0">
-														<Link to="/">
+														<Link to={`/profile/${post?.user?._id}`}>
 															<img
 																className="h-10 w-10 rounded-full"
 																src={`${post.user.profilePhoto}`}
@@ -232,10 +235,6 @@ const PostList = () => {
 														</div>
 													</div>
 												</div>
-												{/* <p className="text-gray-500">
-                          Quisque id sagittis turpis. Nulla sollicitudin rutrum
-                          eros eu dictum...
-                        </p> */}
 											</div>
 										</div>
 									))

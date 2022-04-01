@@ -11,6 +11,7 @@ import {
 } from './pages/admin/Categories';
 
 import {
+	AccountVerified,
 	CreatePost,
 	Profile,
 	SendEmail,
@@ -18,6 +19,7 @@ import {
 	UpdateProfileForm,
 	UploadProfilePhoto,
 } from './pages/private';
+import { UsersList } from './pages/admin/UsersList';
 
 function App() {
 	return (
@@ -60,6 +62,15 @@ function App() {
 					}
 				/>
 				<Route
+					path="/users"
+					element={
+						<PrivateAdminRoute>
+							<UsersList />
+						</PrivateAdminRoute>
+					}
+				/>
+
+				<Route
 					path="/create-post"
 					element={
 						<PrivateRoute>
@@ -96,6 +107,14 @@ function App() {
 					element={
 						<PrivateRoute>
 							<Profile />
+						</PrivateRoute>
+					}
+				/>
+				<Route
+					path="/verify-token/:tokenId"
+					element={
+						<PrivateRoute>
+							<AccountVerified />
 						</PrivateRoute>
 					}
 				/>

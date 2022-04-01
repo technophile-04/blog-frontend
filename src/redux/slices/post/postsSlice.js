@@ -42,7 +42,7 @@ export const createPostAction = createAsyncThunk(
 			if (!error.response) {
 				throw error;
 			}
-			toast.error('Error creating post');
+			toast.error(error.response?.data?.message);
 			return rejectWithValue(error.response?.data);
 		}
 	}
@@ -76,7 +76,7 @@ export const toggleLikeToPostAction = createAsyncThunk(
 			const config = {
 				headers: {
 					'Content-Type': 'application/json',
-					Authorization: `Bearer ${userAuth.token}`,
+					Authorization: `Bearer ${userAuth?.token}`,
 				},
 			};
 
@@ -106,7 +106,7 @@ export const toggleDislikesAction = createAsyncThunk(
 			const config = {
 				headers: {
 					'Content-Type': 'application/json',
-					Authorization: `Bearer ${userAuth.token}`,
+					Authorization: `Bearer ${userAuth?.token}`,
 				},
 			};
 

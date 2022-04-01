@@ -24,4 +24,9 @@ export const API_URLS = {
 	followUser: () => `${API_ROOT}/users/follow`,
 	unFollowUser: () => `${API_ROOT}/users/unfollow`,
 	sendEmail: () => `${API_ROOT}/sendEmail`,
+	sendVerificationToken: () => `${API_ROOT}/users/generate-verify-email-token`,
+	verfifyToken: () => `${API_ROOT}/users/verfiy-account`,
+	fetchAllUsers: () => `${API_ROOT}/users/`,
+	blockUser: (id) => `${API_ROOT}/users/block-user/${id}`,
+	unBlockUser: (id) => `${API_ROOT}/users/unblock-user/${id}`,
 };

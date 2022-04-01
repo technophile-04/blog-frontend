@@ -66,7 +66,7 @@ const Profile = () => {
 														<h1 className="text-2xl font-bold text-gray-900 ">
 															{profile?.firstName} {profile?.lastName}
 															<span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
-																{/* {profile?.accountType} */}
+																{profile?.accountType}
 															</span>
 															{/* Display if verified or not */}
 															{profile?.isAccountVerified ? (
@@ -117,38 +117,41 @@ const Profile = () => {
 
 													<div className="mt-6 flex flex-col justify-stretch space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4">
 														{/* // Hide follow button from the same */}
-														<div>
-															{!profile?.followers?.includes(userAuth?._id) ? (
-																<button
-																	// onClick={followHandler}
-																	onClick={() =>
-																		dispatch(followUserAction(userId))
-																	}
-																	type="button"
-																	className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
-																	disabled={followLoading}
-																>
-																	<HeartIcon
-																		className="-ml-1 mr-2 h-5 w-5 text-gray-400"
-																		aria-hidden="true"
-																	/>
-																	<span>Follow </span>
-																</button>
-															) : (
-																<button
-																	onClick={() =>
-																		dispatch(unFollowUserAction(userId))
-																	}
-																	className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
-																>
-																	<EmojiSadIcon
-																		className="-ml-1 mr-2 h-5 w-5 text-gray-400"
-																		aria-hidden="true"
-																	/>
-																	<span>Unfollow</span>
-																</button>
-															)}
-														</div>
+														{userAuth && userAuth?._id !== profile?._id ? (
+															<div>
+																{!profile?.followers?.includes(
+																	userAuth?._id
+																) ? (
+																	<button
+																		onClick={() =>
+																			dispatch(followUserAction(userId))
+																		}
+																		type="button"
+																		className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
+																		disabled={followLoading}
+																	>
+																		<HeartIcon
+																			className="-ml-1 mr-2 h-5 w-5 text-gray-400"
+																			aria-hidden="true"
+																		/>
+																		<span>Follow </span>
+																	</button>
+																) : (
+																	<button
+																		onClick={() =>
+																			dispatch(unFollowUserAction(userId))
+																		}
+																		className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
+																	>
+																		<EmojiSadIcon
+																			className="-ml-1 mr-2 h-5 w-5 text-gray-400"
+																			aria-hidden="true"
+																		/>
+																		<span>Unfollow</span>
+																	</button>
+																)}
+															</div>
+														) : null}
 
 														{/* Update Profile */}
 
@@ -202,32 +205,38 @@ const Profile = () => {
 										</div>
 									</div>
 									<div className="flex justify-center place-items-start flex-wrap  md:mb-0">
-										<div className="w-full md:w-1/3 px-4 mb-4 md:mb-0">
-											<h1 className="text-center text-xl border-gray-500 mb-2 border-b-2">
-												Who viewed my profile : 9
-											</h1>
-
-											{/* Who view my post */}
-											<ul className="">
-												<Link to="/">
-													<div className="flex mb-2 items-center space-x-4 lg:space-x-6">
-														<img
-															className="w-16 h-16 rounded-full lg:w-20 lg:h-20"
-															// src={user.profilePhoto}
-															alt={'user name'}
-														/>
-														<div className="font-medium text-lg leading-6 space-y-1">
-															<h3>
-																{/* {user?.firstName} {user?.lastName} */}Name
-															</h3>
-															<p className="text-indigo-600">
-																{/* {user.accountType} */} Account Type
-															</p>
-														</div>
-													</div>
-												</Link>
-											</ul>
-										</div>
+										{userAuth && userAuth?._id === profile?._id ? (
+											<div className="w-full md:w-1/3 px-4 mb-4 md:mb-0">
+												<h1 className="text-center text-xl border-gray-500 mb-2 border-b-2">
+													Who viewed my profile : {profile?.viewedBy?.length}
+												</h1>
+												<ul className="">
+													{profile?.viewedBy?.length === 0 ? (
+														<p>No viewers</p>
+													) : (
+														profile?.viewedBy?.map((viewer) => (
+															<Link to={`/profile/${viewer?._id}`}>
+																<div className="flex mb-2 items-center space-x-4 lg:space-x-6">
+																	<img
+																		className="w-16 h-16 rounded-full lg:w-20 lg:h-20"
+																		src={viewer.profilePhoto}
+																		alt={'user name'}
+																	/>
+																	<div className="font-medium text-lg leading-6 space-y-1">
+																		<h3>
+																			{viewer?.firstName} {viewer?.lastName}
+																		</h3>
+																		<p className="text-indigo-600">
+																			{viewer.accountType}
+																		</p>
+																	</div>
+																</div>
+															</Link>
+														))
+													)}
+												</ul>
+											</div>
+										) : null}
 										{/* All my Post */}
 										<div className="w-full md:w-2/3 px-4 mb-4 md:mb-0">
 											<h1 className="text-center text-xl border-gray-500 mb-2 border-b-2">

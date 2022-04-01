@@ -20,14 +20,14 @@ export const createCommentAction = createAsyncThunk(
 				commentBody,
 				config
 			);
-
+			console.log(data);
 			return data;
 		} catch (error) {
 			if (!error.response) {
 				throw error;
 			}
-
-			rejectWithValue(error.response?.data);
+			toast.error(error.response?.data?.message);
+			return rejectWithValue(error.response?.data);
 		}
 	}
 );
@@ -84,7 +84,7 @@ export const updateCommentAction = createAsyncThunk(
 			return data;
 		} catch (error) {
 			if (!error.response) throw error;
-			toast.error(`Error in  updating the comment`);
+			toast.error(error.response?.data?.message);
 			return rejectWithValue(error.response?.data);
 		}
 	}

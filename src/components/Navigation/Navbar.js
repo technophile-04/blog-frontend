@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import AccountVerificationAlertWarning from './AccountVerificationAlertWarning';
 import AdminNavbar from './adminNav/AdminNavbar';
 import PrivateNavbar from './privateNav/PrivateNavbar';
 import PublicNavbar from './publicNav/PublicNavbar';
@@ -15,6 +16,9 @@ const Navbar = () => {
 				) : (
 					<PrivateNavbar isLogin={userAuth} />
 				)}
+				{!userAuth?.isAccountVerified ? (
+					<AccountVerificationAlertWarning />
+				) : null}
 			</>
 		);
 	} else {
