@@ -3,7 +3,15 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navigation/Navbar';
 import PrivateAdminRoute from './components/PrivateAdminRoute';
 import PrivateRoute from './components/PrivateRoute';
-import { Home, Login, Register, PostList, PostDetails } from './pages/public';
+import {
+	Home,
+	Login,
+	Register,
+	PostList,
+	PostDetails,
+	ForgotPassword,
+	ResetPassword,
+} from './pages/public';
 import {
 	AddNewCategory,
 	CategoryList,
@@ -15,6 +23,7 @@ import {
 	CreatePost,
 	Profile,
 	SendEmail,
+	UpdatePassword,
 	UpdatePost,
 	UpdateProfileForm,
 	UploadProfilePhoto,
@@ -111,6 +120,14 @@ function App() {
 					}
 				/>
 				<Route
+					path="/update-password"
+					element={
+						<PrivateRoute>
+							<UpdatePassword />
+						</PrivateRoute>
+					}
+				/>
+				<Route
 					path="/verify-token/:tokenId"
 					element={
 						<PrivateRoute>
@@ -123,6 +140,8 @@ function App() {
 				<Route path="/login" element={<Login />} />
 				<Route path="/posts" element={<PostList />} />
 				<Route path="/posts/:postId" element={<PostDetails />} />
+				<Route path="/forgot-password" element={<ForgotPassword />} />
+				<Route path="/reset-password/:token" element={<ResetPassword />} />
 			</Routes>
 		</BrowserRouter>
 	);

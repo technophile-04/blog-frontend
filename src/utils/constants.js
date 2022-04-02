@@ -29,4 +29,7 @@ export const API_URLS = {
 	fetchAllUsers: () => `${API_ROOT}/users/`,
 	blockUser: (id) => `${API_ROOT}/users/block-user/${id}`,
 	unBlockUser: (id) => `${API_ROOT}/users/unblock-user/${id}`,
+	updatePassword: () => `${API_ROOT}/users/password`,
+	forgotPassword: () => `${API_ROOT}/users/forgot-password-token`,
+	resetPassword: () => `${API_ROOT}/users/reset-password`,
 };

@@ -4,7 +4,7 @@ import * as Yup from 'yup';
 import poster from '../../img/poster.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUserAction } from '../../redux/slices/user/userSlice';
-import { Navigate } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 
 // Form Schema
 const formSchema = Yup.object({
@@ -17,7 +17,6 @@ const Login = () => {
 	const { userAuth, loading, serverErr, appErr } = useSelector(
 		(store) => store.users
 	);
-	// console.log('UserAuth', userAuth);
 
 	const formik = useFormik({
 		initialValues: {
@@ -138,6 +137,11 @@ const Login = () => {
 											{loading ? 'Logging in...' : 'Login'}
 										</button>
 									</form>
+									<Link to="/forgot-password">
+										<p className="text-blue-500 text-lg mt-5 font-semibold ml-5 cursor-pointer">
+											Or Forgot password ?
+										</p>
+									</Link>
 								</div>
 							</div>
 							<div className="w-full lg:w-3/5 px-4 mb-16 lg:mb-0 order-first lg:order-last">

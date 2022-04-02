@@ -220,7 +220,7 @@ export const followUserAction = createAsyncThunk(
 			if (!error?.response) {
 				throw error;
 			}
-			toast.error('Error following  user!');
+			toast.error(error.response?.data?.message);
 			return rejectWithValue(error?.response?.data);
 		}
 	}
@@ -333,6 +333,100 @@ export const unblockUserAction = createAsyncThunk(
 				throw error;
 			}
 			toast.error('Error unblocking the user');
+			return rejectWithValue(error?.response?.data);
+		}
+	}
+);
+
+//update user password
+export const updateUserPasswordAction = createAsyncThunk(
+	'user/updatePassward',
+	async ({ password }, { rejectWithValue, getState, dispatch }) => {
+		const { userAuth } = getState().users;
+		try {
+			const config = {
+				headers: {
+					'content-type': 'application/json',
+					Authorization: `Bearer ${userAuth.token}`,
+				},
+			};
+			const { data } = await axios.put(
+				API_URLS.updatePassword(),
+				{ password },
+				config
+			);
+			toast.success(`Password updated!`);
+			return data;
+		} catch (error) {
+			if (!error?.response) {
+				throw error;
+			}
+			toast.error('Error unblocking the user');
+			return rejectWithValue(error?.response?.data);
+		}
+	}
+);
+
+// Reset password
+export const passwordResetTokenAction = createAsyncThunk(
+	'user/forgotPassword',
+	async (email, { rejectWithValue, getState, dispatch }) => {
+		try {
+			const config = {
+				headers: {
+					'content-type': 'application/json',
+				},
+			};
+			console.log(email);
+
+			const res = await axios.post(
+				API_URLS.forgotPassword(),
+				{
+					email,
+				},
+				config
+			);
+			console.log(res);
+			toast.success('Check you mail!');
+
+			return res.data;
+		} catch (error) {
+			if (!error?.response) {
+				throw error;
+			}
+			toast.error('Error sending the mail');
+			return rejectWithValue(error?.response?.data);
+		}
+	}
+);
+// Reset password
+export const passwordResetAction = createAsyncThunk(
+	'user/resetPassword',
+	async ({ token, password }, { rejectWithValue, getState, dispatch }) => {
+		try {
+			const config = {
+				headers: {
+					'content-type': 'application/json',
+				},
+			};
+
+			const res = await axios.post(
+				API_URLS.resetPassword(),
+				{
+					password,
+					resetToken: token,
+				},
+				config
+			);
+			console.log(res);
+			toast.success('Reset password successfull!');
+
+			return res.data;
+		} catch (error) {
+			if (!error?.response) {
+				throw error;
+			}
+			toast.error('Error resetting password');
 			return rejectWithValue(error?.response?.data);
 		}
 	}
@@ -578,6 +672,65 @@ const userSlice = createSlice({
 		});
 
 		builder.addCase(unblockUserAction.rejected, (state, action) => {
+			state.loading = false;
+			state.serverErr = action?.error?.message;
+			state.appErr = action?.payload?.message;
+		});
+
+		// update password action
+		builder.addCase(updateUserPasswordAction.pending, (state, action) => {
+			state.loading = false;
+			state.serverErr = undefined;
+			state.appErr = undefined;
+		});
+
+		builder.addCase(updateUserPasswordAction.fulfilled, (state, action) => {
+			state.loading = false;
+			state.serverErr = undefined;
+			state.appErr = undefined;
+		});
+
+		builder.addCase(updateUserPasswordAction.rejected, (state, action) => {
+			state.loading = false;
+			state.serverErr = action?.error?.message;
+			state.appErr = action?.payload?.message;
+		});
+
+		// password action
+		builder.addCase(passwordResetTokenAction.pending, (state, action) => {
+			state.loading = false;
+			state.serverErr = undefined;
+			state.appErr = undefined;
+		});
+
+		builder.addCase(passwordResetTokenAction.fulfilled, (state, action) => {
+			state.loading = false;
+			state.serverErr = undefined;
+			state.appErr = undefined;
+			state.passwordToken = action?.payload;
+		});
+
+		builder.addCase(passwordResetTokenAction.rejected, (state, action) => {
+			state.loading = false;
+			state.serverErr = action?.error?.message;
+			state.appErr = action?.payload?.message;
+		});
+
+		// password action
+		builder.addCase(passwordResetAction.pending, (state, action) => {
+			state.loading = false;
+			state.serverErr = undefined;
+			state.appErr = undefined;
+		});
+
+		builder.addCase(passwordResetAction.fulfilled, (state, action) => {
+			state.loading = false;
+			state.serverErr = undefined;
+			state.appErr = undefined;
+			state.passwordReset = action?.payload;
+		});
+
+		builder.addCase(passwordResetAction.rejected, (state, action) => {
 			state.loading = false;
 			state.serverErr = action?.error?.message;
 			state.appErr = action?.payload?.message;

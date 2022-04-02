@@ -5,3 +5,4 @@ export { default as UploadProfilePhoto } from './UploadProfilePhoto';
 export { default as UpdateProfileForm } from './UpdateProfileForm';
 export { default as SendEmail } from './SendEmail';
 export { default as AccountVerified } from './AccountVerified';
+export { default as UpdatePassword } from './UpdatePassword';
