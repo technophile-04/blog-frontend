@@ -1,7 +1,15 @@
 * {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
 }
+
+.fill-available {
+	height: calc(100vh - 64px);
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
