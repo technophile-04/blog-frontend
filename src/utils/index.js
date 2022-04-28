@@ -29,4 +29,12 @@ export const removeItemFromLocalStorage = (key) => {
 	localStorage.removeItem(key);
 };
 
+export const truncateString = (str, num) => {
+	if (str.length > num) {
+		return str.slice(0, num) + '...';
+	} else {
+		return str;
+	}
+};
+
 export const LOCALSTORAGE_TOKEN_KEY = '__amigosBlog__';

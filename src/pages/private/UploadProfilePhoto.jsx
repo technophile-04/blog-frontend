@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
 import { uploadProfilePhotoAction } from '../../redux/slices/user/userSlice';
 import { Navigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 const formSchema = Yup.object({
 	image: Yup.string().required('Image is required'),
@@ -17,6 +18,8 @@ const UploadProfilePhoto = () => {
 		(store) => store.users
 	);
 
+	const [imagePath, setImagePath] = useState([]);
+
 	const formik = useFormik({
 		initialValues: {
 			image: '',
@@ -26,6 +29,11 @@ const UploadProfilePhoto = () => {
 		},
 		validationSchema: formSchema,
 	});
+
+	useEffect(() => {
+		return () =>
+			imagePath?.forEach((file) => URL.revokeObjectURL(file.preview));
+	}, [imagePath]);
 
 	if (isUpdated) {
 		return <Navigate to={`/profile/${userAuth?._id}`} />;
@@ -54,6 +62,13 @@ const UploadProfilePhoto = () => {
 								onBlur={formik.handleBlur('image')}
 								accept="image/jpeg, image/png"
 								onDrop={(acceptedFiles) => {
+									setImagePath(
+										acceptedFiles.map((file) =>
+											Object.assign(file, {
+												preview: URL.createObjectURL(file),
+											})
+										)
+									);
 									formik.setFieldValue('image', acceptedFiles[0]);
 								}}
 							>
@@ -74,7 +89,35 @@ const UploadProfilePhoto = () => {
 								)}
 							</Dropzone>
 						</div>
-
+						<div
+							className="relative"
+							style={{ maxWidth: '100px', maxHeight: '100px' }}
+						>
+							{imagePath[0]?.preview && (
+								<button
+									onClick={() => setImagePath([])}
+									className="absolute z-10 top-0 right-0"
+								>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										className="h-6 w-6 text-red-500 "
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+										strokeWidth={2}
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+										/>
+									</svg>
+								</button>
+							)}
+							{imagePath[0]?.preview && (
+								<img src={imagePath[0]?.preview} alt="uploadedImage" />
+							)}
+						</div>
 						<div className="text-red-500">
 							{formik.touched.image && formik.errors.image}
 						</div>

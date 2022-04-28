@@ -16,6 +16,7 @@ import {
 } from '../../redux/slices/user/userSlice';
 import DateFormatter from '../../components/DateFormatter';
 import Loader from '../../components/Loader';
+import { truncateString } from '../../utils';
 
 const Profile = () => {
 	const { userId } = useParams();
@@ -36,7 +37,7 @@ const Profile = () => {
 					{appErr} {serverErr}
 				</h1>
 			) : (
-				<div className="h-screen flex overflow-hidden bg-white">
+				<div className="h-screen flex overflow-hidden bg-gray-800 text-white">
 					{/* Static sidebar for desktop */}
 
 					<div className="flex flex-col min-w-0 flex-1 overflow-hidden">
@@ -48,7 +49,9 @@ const Profile = () => {
 										<div>
 											<img
 												className="h-32 w-full object-cover lg:h-48"
-												src={profile?.profilePhoto}
+												src={
+													'https://images.unsplash.com/photo-1650841095095-a01cbda9b138?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2800&q=80'
+												}
 												alt={profile?.firstName}
 											/>
 										</div>
@@ -63,11 +66,11 @@ const Profile = () => {
 												</div>
 												<div className="mt-6 sm:flex-1 sm:min-w-0 sm:flex sm:items-center sm:justify-end sm:space-x-6 sm:pb-1">
 													<div className=" flex flex-col 2xl:block mt-10 min-w-0 flex-1">
-														<h1 className="text-2xl font-bold text-gray-900 ">
-															{profile?.firstName} {profile?.lastName}
+														<h1 className="text-2xl font-bold text-white ">
+															{profile?.firstName} {profile?.lastName}{' '}
 															<span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
 																{profile?.accountType}
-															</span>
+															</span>{' '}
 															{/* Display if verified or not */}
 															{profile?.isAccountVerified ? (
 																<span className="inline-flex ml-2 items-center px-3 py-0.5  rounded-lg text-sm font-medium bg-green-600 text-gray-300">
@@ -79,8 +82,8 @@ const Profile = () => {
 																</span>
 															)}
 														</h1>
-														<p className="m-3 text-lg">
-															Date Joined:
+														<p className="m-3 text-lg text-white">
+															Date Joined :{' '}
 															<DateFormatter date={profile?.createdAt} />
 														</p>
 														<p className="text-green-600 mt-2 mb-2 font-semibold">
@@ -90,10 +93,10 @@ const Profile = () => {
 														</p>
 														{/* Who view my profile */}
 														<div className="flex items-center  mb-2">
-															<EyeIcon className="h-5 w-5 " />
-															<div className="pl-2">
-																{/* {profile?.viewedBy?.length}{" "} */}
-																<span className="text-indigo-400 cursor-pointer hover:underline">
+															<EyeIcon className="h-5 w-5 text-indigo-400" />
+															<div className="pl-2 text-indigo-400">
+																{profile?.viewedBy?.length}{' '}
+																<span className="text-indigo-400 cursor-pointer">
 																	users viewed your profile
 																</span>
 															</div>
@@ -192,7 +195,7 @@ const Profile = () => {
 												</div>
 											</div>
 											<div className="hidden sm:block 2xl:hidden mt-6 min-w-0 flex-1">
-												<h1 className="text-2xl font-bold text-gray-900 truncate">
+												<h1 className="text-2xl font-bold text-white truncate">
 													{profile?.firstName} {profile?.lastName}
 												</h1>
 											</div>
@@ -240,10 +243,9 @@ const Profile = () => {
 										{/* All my Post */}
 										<div className="w-full md:w-2/3 px-4 mb-4 md:mb-0">
 											<h1 className="text-center text-xl border-gray-500 mb-2 border-b-2">
-												My Post - {profile?.posts?.length}
+												My Post - {profile?.postCount}
 											</h1>
-											{/* Loo here */}
-											{profile?.posts?.length <= 0 ? (
+											{profile?.postCount <= 0 ? (
 												<h1 className="text-xl text-red-400 text-center">
 													No posts found
 												</h1>
@@ -271,8 +273,8 @@ const Profile = () => {
 																	{post?.title.toUpperCase()}
 																</h3>
 															</Link>
-															<p className="text-gray-600 truncate">
-																{post?.description}
+															<p className="text-gray-200">
+																{truncateString(post?.description, 100)}
 															</p>
 															<Link
 																className="text-indigo-500 hover:underline"

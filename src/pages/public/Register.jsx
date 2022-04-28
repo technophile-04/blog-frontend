@@ -39,18 +39,21 @@ const Register = () => {
 	});
 
 	if (registerdUser || userAuth) {
-		return <Navigate to="/" />;
+		return <Navigate to="/login" />;
 	}
 
 	return (
-		<section className="relative py-20 2xl:py-40 bg-gray-800 overflow-hidden">
+		<section className="relative py-20 2xl:py-40 bg-gray-900 overflow-hidden">
 			<div className="relative container px-4 mx-auto">
 				<div className="max-w-5xl mx-auto">
 					<div className="flex flex-wrap items-center -mx-4">
 						<div className="w-full lg:w-1/2 px-4 mb-16 lg:mb-0">
 							<div className="max-w-md">
 								<h2 className="mt-8 mb-12 text-5xl font-bold font-heading text-white">
-									Create an account and start penning down your ideas
+									Create an account and{' '}
+									<span className="text-yellow-600">
+										start penning down your ideas
+									</span>
 								</h2>
 							</div>
 						</div>

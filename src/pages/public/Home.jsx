@@ -2,7 +2,7 @@ import React from 'react';
 
 const Home = () => {
 	return (
-		<div className="flex flex-col items-center justify-center bg-gray-800 fill-available">
+		<div className="flex flex-col items-center justify-center bg-gray-900 fill-available">
 			<p className="text-lg font-bold text-blue-400 ">
 				Create posts to educate
 			</p>

@@ -18,7 +18,7 @@ const UsersList = () => {
 	return (
 		<>
 			<section className="py-8 bg-gray-900 min-h-screen">
-				<UsersListHeader />
+				<UsersListHeader usersLength={allUsers?.length} />
 				<div className="container px-4 mx-auto">
 					{loading ? (
 						<Loader />

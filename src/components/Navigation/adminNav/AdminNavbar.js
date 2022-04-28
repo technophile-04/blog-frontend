@@ -2,7 +2,7 @@ import { Fragment } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 // import toast, { Toaster } from 'react-hot-toast';
 
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import {
 	BellIcon,
 	MenuIcon,
@@ -64,26 +64,24 @@ const AdminNavbar = ({ isLogin }) => {
 								</div>
 								<div className="hidden md:ml-6 md:flex md:items-center md:space-x-4">
 									{navigation.map((item) => (
-										<Link
+										<NavLink
 											key={item.name}
 											to={item.href}
-											className={classNames(
-												item.current
-													? 'bg-gray-900 text-white'
-													: 'text-gray-300 hover:bg-gray-700 hover:text-white',
-												'px-3 py-2 rounded-md text-sm font-medium'
-											)}
-											aria-current={item.current ? 'page' : undefined}
+											className={(navData) =>
+												navData.isActive
+													? 'bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium'
+													: 'text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium'
+											}
 										>
 											{item.name}
-										</Link>
+										</NavLink>
 									))}
 								</div>
 							</div>
 							<div className="flex items-center">
 								<div className="flex-shrink-0">
 									{/* New post */}
-									<Link
+									<NavLink
 										to="/create-post"
 										type="button"
 										className="relative mr-4 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none"
@@ -93,7 +91,7 @@ const AdminNavbar = ({ isLogin }) => {
 											aria-hidden="true"
 										/>
 										<span>New Post</span>
-									</Link>
+									</NavLink>
 									{/* Logout */}
 									<button
 										type="button"
@@ -138,7 +136,7 @@ const AdminNavbar = ({ isLogin }) => {
 														{userNavigation.map((item) => (
 															<Menu.Item key={item.name}>
 																{({ active }) => (
-																	<Link
+																	<NavLink
 																		to={item.href}
 																		className={classNames(
 																			active ? 'bg-gray-100' : '',
@@ -146,7 +144,7 @@ const AdminNavbar = ({ isLogin }) => {
 																		)}
 																	>
 																		{item.name}
-																	</Link>
+																	</NavLink>
 																)}
 															</Menu.Item>
 														))}
@@ -163,19 +161,18 @@ const AdminNavbar = ({ isLogin }) => {
 					<Disclosure.Panel className="md:hidden">
 						<div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
 							{navigation.map((item) => (
-								<Link
-									to={`${item.href}`}
+								<NavLink
+									to={item.href}
 									key={item.name}
-									className={classNames(
-										item.current
-											? 'bg-gray-900 text-white'
-											: 'text-gray-300 hover:bg-gray-700 hover:text-white',
-										'block px-3 py-2 rounded-md text-base font-medium'
-									)}
+									className={(navData) =>
+										navData.isActive
+											? 'bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium'
+											: 'text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium'
+									}
 									aria-current={item.current ? 'page' : undefined}
 								>
 									{item.name}
-								</Link>
+								</NavLink>
 							))}
 						</div>
 						<div className="pt-4 pb-3 border-t border-gray-700">
@@ -202,13 +199,13 @@ const AdminNavbar = ({ isLogin }) => {
 							</div>
 							<div className="mt-3 px-2 space-y-1 sm:px-3">
 								{userNavigation.map((item) => (
-									<Link
+									<NavLink
 										key={item.name}
 										to={item.href}
 										className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
 									>
 										{item.name}
-									</Link>
+									</NavLink>
 								))}
 							</div>
 						</div>

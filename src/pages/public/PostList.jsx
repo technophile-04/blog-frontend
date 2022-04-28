@@ -13,6 +13,7 @@ import DateFormatter from '../../components/DateFormatter';
 import { fetchAllCategoriesAction } from '../../redux/slices/category/categorySlice';
 import { HashLoader } from 'react-spinners';
 import { css } from '@emotion/react';
+import { truncateString } from '../../utils';
 
 const override = css`
 	display: block;
@@ -198,13 +199,15 @@ const PostList = () => {
 														{post?.title}
 													</h3>
 												</Link>
-												<p className="text-gray-300">{post.description}</p>
+												<p className="text-gray-300">
+													{truncateString(post?.description, 250)}
+												</p>
 												{/* Read more */}
 												<Link
 													to={`/posts/${post._id}`}
 													className="text-indigo-500 hover:underline"
 												>
-													Read More..
+													Read More
 												</Link>
 												{/* User Avatar */}
 												<div className="mt-6 flex items-center">

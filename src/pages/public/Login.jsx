@@ -1,7 +1,6 @@
 import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import poster from '../../img/poster.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUserAction } from '../../redux/slices/user/userSlice';
 import { Link, Navigate } from 'react-router-dom';
@@ -35,19 +34,12 @@ const Login = () => {
 
 	return (
 		<>
-			<section className="min-h-screen relative py-20 2xl:py-40 bg-gray-900 overflow-hidden">
-				<div className="absolute top-0 left-0 lg:bottom-0 h-full lg:h-auto w-full lg:w-4/12 bg-violet-500 lg:overflow-hidden">
-					<img
-						className="hidden lg:block h-full w-full object-cover"
-						src={poster}
-						alt=""
-					/>
-				</div>
+			<section className="fill-available relative py-20 2xl:py-40 bg-gray-900 overflow-hidden">
 				<div className="relative container px-4 mx-auto">
 					<div className="max-w-5xl mx-auto">
 						<div className="flex flex-wrap items-center -mx-4">
 							<div className="w-full lg:w-2/5 px-4">
-								<div className="px-6 lg:px-12 py-12 lg:py-24 bg-white shadow-lg rounded-lg">
+								<div className="px-6 lg:px-12 py-12 lg:py-24 bg-white rounded-lg shadow-2xl">
 									{/* Form */}
 									<form onSubmit={formik.handleSubmit}>
 										<h3 className="mb-10 text-2xl font-bold font-heading">
@@ -185,7 +177,7 @@ const Login = () => {
 										</g>
 									</svg>
 								</span>
-								<h2 className="mb-10 text-center text-6xl lg:text-7xl text-gray-300 font-bold font-heading">
+								<h2 className="md:mb-10 text-center text-6xl lg:text-7xl text-gray-300 font-bold font-heading">
 									Ready to start? Login Now.
 								</h2>
 							</div>

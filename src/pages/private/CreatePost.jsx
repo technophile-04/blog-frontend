@@ -6,6 +6,7 @@ import CategoryDropDown from '../../components/CategoryDropDown';
 import DropZone from 'react-dropzone';
 import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 const formSchema = Yup.object({
 	title: Yup.string().required('Title is required'),
@@ -18,6 +19,9 @@ const CreatePost = () => {
 	const { isCreated, loading, serverErr, appErr } = useSelector(
 		(state) => state.posts
 	);
+
+	const [imagePath, setImagePath] = useState([]);
+
 	const dispatch = useDispatch();
 
 	const formik = useFormik({
@@ -41,6 +45,11 @@ const CreatePost = () => {
 
 		validationSchema: formSchema,
 	});
+
+	useEffect(() => {
+		return () =>
+			imagePath?.forEach((file) => URL.revokeObjectURL(file.preview));
+	}, [imagePath]);
 
 	if (isCreated) {
 		return <Navigate to="/posts" />;
@@ -141,6 +150,13 @@ const CreatePost = () => {
 								<div className="flex flex-1 flex-col items-center p-5 border-2 rounded-sm border-gray-400 border-dashed text-gray-400 transition-all duration-100 ease-in-out container">
 									<DropZone
 										onDrop={(acceptedFile) => {
+											setImagePath(
+												acceptedFile.map((file) =>
+													Object.assign(file, {
+														preview: URL.createObjectURL(file),
+													})
+												)
+											);
 											formik.setFieldValue('image', acceptedFile[0]);
 										}}
 										accept={'image/jpeg,image/png'}
@@ -170,6 +186,36 @@ const CreatePost = () => {
 									</DropZone>
 								</div>
 							</div>
+							<div
+								className="relative"
+								style={{ maxWidth: '100px', maxHeight: '100px' }}
+							>
+								{imagePath[0]?.preview && (
+									<button
+										onClick={() => setImagePath([])}
+										className="absolute z-10 top-0 right-0"
+									>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											className="h-6 w-6 text-red-500 "
+											fill="none"
+											viewBox="0 0 24 24"
+											stroke="currentColor"
+											strokeWidth={2}
+										>
+											<path
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+											/>
+										</svg>
+									</button>
+								)}
+								{imagePath[0]?.preview && (
+									<img src={imagePath[0]?.preview} alt="uploadedImage" />
+								)}
+							</div>
+
 							<div>
 								{/* Submit btn */}
 								<button

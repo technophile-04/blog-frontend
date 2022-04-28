@@ -1,5 +1,5 @@
 import { Disclosure } from '@headlessui/react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import {
 	MenuIcon,
 	XIcon,
@@ -15,10 +15,6 @@ const navigation = [
 	{ name: 'Register', href: '/register', current: false },
 	{ name: 'Login', href: '/login', current: false },
 ];
-
-function classNames(...classes) {
-	return classes.filter(Boolean).join(' ');
-}
 
 const PublicNavbar = () => {
 	return (
@@ -45,19 +41,17 @@ const PublicNavbar = () => {
 								</div>
 								<div className="hidden md:ml-6 md:flex md:items-center md:space-x-4">
 									{navigation.map((item) => (
-										<Link
+										<NavLink
 											key={item.name}
 											to={item.href}
-											className={classNames(
-												item.current
-													? 'bg-gray-900 text-white'
-													: 'text-gray-300 hover:bg-gray-700 hover:text-white',
-												'px-3 py-2 rounded-md text-sm font-medium'
-											)}
-											aria-current={item.current ? 'page' : undefined}
+											className={(navData) =>
+												navData.isActive
+													? 'bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium'
+													: 'text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium'
+											}
 										>
 											{item.name}
-										</Link>
+										</NavLink>
 									))}
 								</div>
 							</div>
@@ -94,19 +88,17 @@ const PublicNavbar = () => {
 					<Disclosure.Panel className="md:hidden">
 						<div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
 							{navigation.map((item) => (
-								<a
+								<NavLink
 									key={item.name}
-									href={item.href}
-									className={classNames(
-										item.current
-											? 'bg-gray-900 text-white'
-											: 'text-gray-300 hover:bg-gray-700 hover:text-white',
-										'block px-3 py-2 rounded-md text-base font-medium'
-									)}
-									aria-current={item.current ? 'page' : undefined}
+									to={item.href}
+									className={(navData) =>
+										navData.isActive
+											? 'bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium'
+											: 'text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium'
+									}
 								>
 									{item.name}
-								</a>
+								</NavLink>
 							))}
 						</div>
 					</Disclosure.Panel>
