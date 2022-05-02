@@ -73,8 +73,11 @@ const PostDetails = () => {
 							</Link>
 							{/* Post description */}
 							<div className="max-w-xl mx-auto">
-								<p className="mb-6 text-left  text-xl text-gray-200">
-									{post?.description}
+								<div className="mb-6  text-xl text-gray-200">
+									<div
+										className="text-gray-200"
+										dangerouslySetInnerHTML={{ __html: post?.description }}
+									/>
 									{userAuth?._id ? (
 										post?.user._id === userAuth._id ? (
 											<p className="flex">
@@ -90,7 +93,7 @@ const PostDetails = () => {
 											</p>
 										) : null
 									) : null}
-								</p>
+								</div>
 							</div>
 						</div>
 					</div>

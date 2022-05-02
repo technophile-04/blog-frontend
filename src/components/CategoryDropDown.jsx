@@ -29,7 +29,7 @@ const CategoryDropDown = (props) => {
 				options={allCategories}
 				isClearable
 				onChange={handleChange}
-				onblur={handleBlur}
+				onBlur={handleBlur}
 				value={props?.value?.label}
 				isLoading={loading}
 				isDisabled={loading}

@@ -7,11 +7,16 @@ import DropZone from 'react-dropzone';
 import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { EditorState, convertToRaw } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import draftToHtml from 'draftjs-to-html';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import axios from 'axios';
 
 const formSchema = Yup.object({
 	title: Yup.string().required('Title is required'),
 	description: Yup.string().required('Description is required'),
-	category: Yup.object().required('Category is required'),
+	category: Yup.object().required('Category is required').nullable(),
 	image: Yup.string().required('image  is required'),
 });
 
@@ -46,6 +51,49 @@ const CreatePost = () => {
 		validationSchema: formSchema,
 	});
 
+	let editorState = EditorState.createEmpty();
+	const [description, setDescription] = useState(editorState);
+	const onEditorStateChange = (editorState) => {
+		setDescription(editorState);
+		const desc = draftToHtml(convertToRaw(editorState.getCurrentContent()));
+		formik.setFieldValue('description', desc);
+	};
+
+	const handleEditorBlur = (e) => {
+		formik.setFieldTouched('description', true);
+	};
+
+	function uploadImageCallBack(file) {
+		return new Promise((resolve, reject) => {
+			(async () => {
+				try {
+					const formData = new FormData();
+					formData.append('file', file);
+					formData.append(
+						'upload_preset',
+						process.env.REACT_APP_CLOUDINARY_PRESET
+					);
+
+					const res = await axios.post(
+						`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_NAME}/image/upload`,
+						formData
+					);
+
+					const imgObj = {
+						data: {
+							link: res.data.secure_url,
+						},
+					};
+
+					resolve(imgObj);
+				} catch (error) {
+					console.log('from editor image', error.message);
+					reject(error);
+				}
+			})();
+		});
+	}
+
 	useEffect(() => {
 		return () =>
 			imagePath?.forEach((file) => URL.revokeObjectURL(file.preview));
@@ -78,8 +126,8 @@ const CreatePost = () => {
 						</p>
 					) : null}
 				</div>
-				<div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-					<div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+				<div className="mt-8 md:w-3/4 mx-auto">
+					<div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 w-full">
 						<form className="space-y-6" onSubmit={formik.handleSubmit}>
 							<div>
 								<label
@@ -125,7 +173,7 @@ const CreatePost = () => {
 									Description
 								</label>
 								{/* Description */}
-								<textarea
+								{/* <textarea
 									rows="5"
 									cols="10"
 									className="rounded-lg appearance-none block w-full py-3 px-3 text-base text-center leading-tight text-gray-600 bg-transparent focus:bg-transparent  border border-gray-200 focus:border-gray-500  focus:outline-none"
@@ -134,7 +182,29 @@ const CreatePost = () => {
 									onBlur={formik.handleBlur('description')}
 									type="text"
 								></textarea>
-								{/* Err msg */}
+								<div className="text-red-500">
+									{formik.touched.description && formik.errors.description}
+								</div> */}
+								<Editor
+									editorState={description}
+									toolbarClassName="toolbarClassName"
+									wrapperClassName="wrapperClassName"
+									editorClassName="border-2 border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+									onEditorStateChange={onEditorStateChange}
+									onBlur={handleEditorBlur}
+									toolbar={{
+										list: { inDropdown: true },
+										textAlign: { inDropdown: true },
+										link: { inDropdown: true },
+										history: { inDropdown: true },
+										image: {
+											uploadCallback: uploadImageCallBack,
+											alt: { present: true, mandatory: true },
+											previewImage: true,
+											defaultSize: { width: 500, height: 250 },
+										},
+									}}
+								/>
 								<div className="text-red-500">
 									{formik.touched.description && formik.errors.description}
 								</div>
