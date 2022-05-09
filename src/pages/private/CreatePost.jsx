@@ -12,6 +12,7 @@ import { Editor } from 'react-draft-wysiwyg';
 import draftToHtml from 'draftjs-to-html';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import axios from 'axios';
+import embed from 'embed-video';
 
 const formSchema = Yup.object({
 	title: Yup.string().required('Title is required'),
@@ -172,19 +173,6 @@ const CreatePost = () => {
 								>
 									Description
 								</label>
-								{/* Description */}
-								{/* <textarea
-									rows="5"
-									cols="10"
-									className="rounded-lg appearance-none block w-full py-3 px-3 text-base text-center leading-tight text-gray-600 bg-transparent focus:bg-transparent  border border-gray-200 focus:border-gray-500  focus:outline-none"
-									value={formik.values.description}
-									onChange={formik.handleChange('description')}
-									onBlur={formik.handleBlur('description')}
-									type="text"
-								></textarea>
-								<div className="text-red-500">
-									{formik.touched.description && formik.errors.description}
-								</div> */}
 								<Editor
 									editorState={description}
 									toolbarClassName="toolbarClassName"
@@ -193,6 +181,7 @@ const CreatePost = () => {
 									onEditorStateChange={onEditorStateChange}
 									onBlur={handleEditorBlur}
 									toolbar={{
+										inline: { inDropdown: true },
 										list: { inDropdown: true },
 										textAlign: { inDropdown: true },
 										link: { inDropdown: true },
@@ -202,6 +191,18 @@ const CreatePost = () => {
 											alt: { present: true, mandatory: true },
 											previewImage: true,
 											defaultSize: { width: 500, height: 250 },
+										},
+										embedded: {
+											embedCallback: (link) => {
+												const detectedSrc = /<iframe.*? src="(.*?)"/.exec(
+													embed(link)
+												);
+												return (detectedSrc && detectedSrc[1]) || link;
+											},
+										},
+										blockType: {
+											inDropdown: true,
+											options: ['Normal', 'Blockquote', 'Code'],
 										},
 									}}
 								/>
@@ -215,7 +216,7 @@ const CreatePost = () => {
 									htmlFor="password"
 									className="block text-sm font-medium mb-1 text-gray-700"
 								>
-									Select an image
+									Cover Image
 								</label>
 								<div className="flex flex-1 flex-col items-center p-5 border-2 rounded-sm border-gray-400 border-dashed text-gray-400 transition-all duration-100 ease-in-out container">
 									<DropZone

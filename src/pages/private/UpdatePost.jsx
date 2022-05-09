@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
@@ -8,6 +8,17 @@ import {
 	updatePostAction,
 } from '../../redux/slices/post/postsSlice';
 import { Navigate, useParams } from 'react-router-dom';
+import {
+	EditorState,
+	convertToRaw,
+	ContentState,
+	convertFromHTML,
+} from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import draftToHtml from 'draftjs-to-html';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import axios from 'axios';
+import embed from 'embed-video';
 
 const formSchema = Yup.object({
 	title: Yup.string().required('Title is required'),
@@ -45,9 +56,64 @@ const UpdatePost = (props) => {
 		validationSchema: formSchema,
 	});
 
+	const [description, setDescription] = useState(() =>
+		EditorState.createWithContent(
+			ContentState.createFromBlockArray(
+				convertFromHTML(post?.description || '<p></p>')
+			)
+		)
+	);
+	const onEditorStateChange = (editorState) => {
+		setDescription(editorState);
+		const desc = draftToHtml(convertToRaw(editorState.getCurrentContent()));
+		formik.setFieldValue('description', desc);
+	};
+
+	const handleEditorBlur = (e) => {
+		formik.setFieldTouched('description', true);
+	};
+
+	function uploadImageCallBack(file) {
+		return new Promise((resolve, reject) => {
+			(async () => {
+				try {
+					const formData = new FormData();
+					formData.append('file', file);
+					formData.append(
+						'upload_preset',
+						process.env.REACT_APP_CLOUDINARY_PRESET
+					);
+
+					const res = await axios.post(
+						`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_NAME}/image/upload`,
+						formData
+					);
+
+					const imgObj = {
+						data: {
+							link: res.data.secure_url,
+						},
+					};
+
+					resolve(imgObj);
+				} catch (error) {
+					console.log('from editor image', error.message);
+					reject(error);
+				}
+			})();
+		});
+	}
+
 	useEffect(() => {
 		dispatch(fetchPostAction(postId));
-	}, [postId, dispatch]);
+		setDescription(
+			EditorState.createWithContent(
+				ContentState.createFromBlockArray(
+					convertFromHTML(post?.description || '<p></p>')
+				)
+			)
+		);
+	}, [postId, dispatch, post?.description]);
 
 	if (isUpdated) {
 		return <Navigate to={`/posts`} />;
@@ -68,8 +134,8 @@ const UpdatePost = (props) => {
 					</h2>
 				</div>
 
-				<div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-					<div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+				<div className="mt-8 md:w-3/4 mx-auto">
+					<div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 w-full">
 						<form className="space-y-6" onSubmit={formik.handleSubmit}>
 							<div>
 								<label
@@ -94,7 +160,6 @@ const UpdatePost = (props) => {
 									{formik.touched.title && formik.errors.title}
 								</div>
 							</div>
-
 							<CategoryDropDown
 								value={formik.values.category?.label}
 								onChange={formik.setFieldValue}
@@ -109,15 +174,40 @@ const UpdatePost = (props) => {
 								>
 									Description
 								</label>
-								<textarea
-									rows="5"
-									cols="10"
-									onBlur={formik.handleBlur('description')}
-									value={formik.values.description}
-									onChange={formik.handleChange('description')}
-									className="rounded-lg appearance-none block w-full py-3 px-3 text-base text-center leading-tight text-gray-600 bg-transparent focus:bg-transparent  border border-gray-200 focus:border-gray-500  focus:outline-none"
-									type="text"
-								></textarea>
+								<Editor
+									editorState={description}
+									toolbarClassName="toolbarClassName"
+									wrapperClassName="wrapperClassName"
+									editorClassName="border-2 border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+									onEditorStateChange={onEditorStateChange}
+									onBlur={handleEditorBlur}
+									toolbar={{
+										inline: { inDropdown: true },
+										list: { inDropdown: true },
+										textAlign: { inDropdown: true },
+										link: { inDropdown: true },
+										history: { inDropdown: true },
+										image: {
+											uploadCallback: uploadImageCallBack,
+											alt: { present: true, mandatory: true },
+											previewImage: true,
+											defaultSize: { width: 500, height: 250 },
+										},
+										embedded: {
+											embedCallback: (link) => {
+												const detectedSrc = /<iframe.*? src="(.*?)"/.exec(
+													embed(link)
+												);
+												return (detectedSrc && detectedSrc[1]) || link;
+											},
+										},
+										blockType: {
+											inDropdown: true,
+											options: ['Normal', 'Blockquote', 'Code'],
+										},
+									}}
+								/>
+								loc
 								<div className="text-red-500">
 									{formik.touched.description && formik.errors.description}
 								</div>

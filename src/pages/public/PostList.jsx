@@ -199,9 +199,15 @@ const PostList = () => {
 														{post?.title}
 													</h3>
 												</Link>
-												<p className="text-gray-300">
+												{/* <p className="text-gray-300">
 													{truncateString(post?.description, 250)}
-												</p>
+												</p> */}
+												<div
+													className="text-gray-200 md:text-lg text-md text-left pr-8"
+													dangerouslySetInnerHTML={{
+														__html: truncateString(post?.description, 150),
+													}}
+												/>
 												{/* Read more */}
 												<Link
 													to={`/posts/${post._id}`}

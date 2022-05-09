@@ -33,6 +33,7 @@ const CategoryDropDown = (props) => {
 				value={props?.value?.label}
 				isLoading={loading}
 				isDisabled={loading}
+				styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
 			/>
 			<div className="text-red-500">{props?.touched && props?.error}</div>
 		</>
