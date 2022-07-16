@@ -34,7 +34,7 @@ A full stack blog application which is free from race and unhealthy words. This 
 <img src='images/register.png' width=1000 height=600 />
 
 #### All Post Page :
-<img src='images/publi_postList.png' width=1000 height=600 />
+<img src='images/publi_postList.jpg' width=1000 height=600 />
 
 ####  Single Post Page :
 <img src='images/postDetails.png' width=1000 height=600 />
@@ -43,7 +43,7 @@ A full stack blog application which is free from race and unhealthy words. This 
 ### Private Pages(Logged in User) 
 
 #### Profile Page :
-<img src='images/profile.png' width=1000 height=600 />
+<img src='images/profile.jpg' width=1000 height=600 />
 
 #### Create Post Page :
 <img src='images/createPost.png' width=1000 height=600 />
