@@ -3,6 +3,8 @@
 A full stack blog application which is free from race and unhealthy words. This is a side project which I created to practice my web developments skills and also a boiler plate project trying to follow good folder structure and coding practices.
 
 ## Table of contents : 
+- [Features](#features-)
+- [Project Screen Shots](#project-screen-shots)
 - [Installation and Setup Instructions](#installation-and-setup-instructions)
 
 
@@ -39,52 +41,3 @@ A full stack blog application which is free from race and unhealthy words. This 
 
 
 ### Private Pages(Logged in User) 
-
-#### Profile Page :
-<img src='images/profile.png' width=1000 height=600 />
-
-#### Create Post Page :
-<img src='images/createPost.png' width=1000 height=600 />
-
-
-### Admin Pages(Logged in as Admin) 
-
-#### List of All authors Page :
-<img src='images/admin_users.png' width=1000 height=600 />
-
-#### Create Cateogry Page :
-<img src='images/admin_createdCat.png' width=1000 height=600 />
-
-#### Add category  Page :
-<img src='images/admin_addCat.png' width=1000 height=600 />
-
-
-# Installation and Setup Instructions
-
-Clone down this repository. You will need `node` and `npm` installed globally on your machine.  
-
-Installation:
-
-    $ git clone https://github.com/technophile-04/blog-frontend.git
-    $ cd blog-frontend
-    $ npm install
-    
-Setup : 
-To view the website locally you need to first run the server i.e backend check out [blog-backend](https://github.com/technophile-04/blog-backend) for backend code. You will be needing cloudinary preset and name.
-
-Add cloudinary preset and name to `.env` by creating them. You can refer `.env.example` .
-
-useful links : 
-
-[https://cloudinary.com/documentation/upload_presets](https://cloudinary.com/documentation/upload_presets)
-
-[https://www.youtube.com/watch?v=Rw_QeJLnCK4&t=20:35](https://www.youtube.com/watch?v=Rw_QeJLnCK4&t=20:35)
-
-
-To View on browser App:
-
-Run : 
-    
-    $ npm start
-
-open `localhost:3000`  on browser.
